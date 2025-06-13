@@ -1,0 +1,9 @@
+{
+  "voicemessages.recording": "Запись голосового сообщения",
+  "voicemessages.confirm": "Подтверждения отправки голосового сообщения",
+  "voicemessages.send": "Отправить голосовое сообщение",
+  "voicemessages.kick.permission_violated": "Наружено разрешение на отправку голосовых сообщений",
+  "voicemessages.kick.invalid": "Вы отправили невалидное голосовое сообщение",
+  "voicemessages.kick.spam": "Длительность отправленного голосового сообщения больше времени, прошедшего с отправки предыдущего",
+  "voicemessages.microphone_error": "Ошибка микрофона: %s"
+}

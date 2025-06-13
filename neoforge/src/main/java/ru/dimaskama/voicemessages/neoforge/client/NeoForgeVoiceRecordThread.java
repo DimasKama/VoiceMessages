@@ -1,0 +1,67 @@
+package ru.dimaskama.voicemessages.neoforge.client;
+
+import de.maxhenkel.voicechat.voice.client.ClientManager;
+import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
+import de.maxhenkel.voicechat.voice.client.MicThread;
+import ru.dimaskama.voicemessages.VoiceMessagesService;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+public class NeoForgeVoiceRecordThread extends Thread implements VoiceMessagesService.VoiceRecordThread {
+
+    private static final AtomicInteger THREAD_COUNT = new AtomicInteger();
+    private final Predicate<short[]> frameConsumer;
+    private final MicThread micThread;
+    private final boolean usesOwnMicThread;
+    private volatile boolean running;
+
+    public NeoForgeVoiceRecordThread(Predicate<short[]> frameConsumer, Consumer<IOException> onMicError) {
+        this.frameConsumer = frameConsumer;
+        setDaemon(true);
+        setName("VoiceRecordThread#" + THREAD_COUNT.getAndIncrement());
+        ClientVoicechat client = ClientManager.getClient();
+        MicThread micThread = client != null ? client.getMicThread() : null;
+        if (micThread == null) {
+            micThread = new MicThread(client, null, onMicError::accept);
+            usesOwnMicThread = true;
+        } else {
+            usesOwnMicThread = false;
+        }
+        micThread.setMicrophoneLocked(true);
+        this.micThread = micThread;
+        running = true;
+    }
+
+    @Override
+    public void run() {
+        while (running) {
+            short[] buff = this.micThread.pollMic();
+            if (buff != null) {
+                running = frameConsumer.test(buff);
+            }
+        }
+        micThread.setMicrophoneLocked(false);
+        if (usesOwnMicThread) {
+            micThread.close();
+        }
+    }
+
+    @Override
+    public void startVoiceRecord() {
+        start();
+    }
+
+    @Override
+    public void stopVoiceRecord() {
+        try {
+            running = false;
+            join();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+}

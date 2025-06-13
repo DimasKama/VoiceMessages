@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "voicemessages",
+  "version": "${version}",
+  "name": "Voice Messages",
+  "description": "Voice messages in minecraft chat",
+  "authors": [
+    "DimasKama"
+  ],
+  "license": "All-Rights-Reserved",
+  "icon": "assets/voicemessages/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "ru.dimaskama.voicemessages.fabric.VoiceMessagesFabric"
+    ],
+    "client": [
+      "ru.dimaskama.voicemessages.fabric.client.VoiceMessagesFabricClient"
+    ],
+    "voicechat": [
+      "ru.dimaskama.voicemessages.VoiceMessagesPlugin"
+    ]
+  },
+  "mixins": [
+    "voicemessages.mixins.json",
+    "voicemessages-fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.7",
+    "minecraft": ">=1.21.4",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "recommends": {
+    "voicechat": "*"
+  }
+}

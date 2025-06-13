@@ -1,0 +1,38 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+#issueTrackerURL = ""
+license = "All-Rights-Reserved"
+
+[[mods]]
+modId = "voicemessages"
+version = "${version}"
+displayName = "Voice Messages"
+authors = "DimasKama"
+description = '''
+Voice messages in minecraft chat
+'''
+logoFile = "icon.png"
+
+[[dependencies.voicemessages]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.4,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.voicemessages]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.4,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.voicemessages]]
+modId = "voicechat"
+type = "optional"
+versionRange = "(,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[mixins]]
+config = "voicemessages.mixins.json"
