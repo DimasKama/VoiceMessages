@@ -1,0 +1,26 @@
+# Voice messages
+Mod and plugin that adds voice messages to the Minecraft. <p>
+Requires [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) installed.
+
+![preview gif](images/preview.gif)
+
+## Summary
+This mod must be installed both on server and client to work. <p>
+If a player does not have this mod installed, he will not see voice messages.
+
+## Setup on server
+
+### Config
+Server config is located in `config/voicemessages_server.json` <p>
+Here are the default values with their description: <p>
+```
+{
+  "max_voice_message_duration_ms": 90000,  // The maximum voice message length in milliseconds in range [3_000;300_000]
+  "voice_message_spam_punishment": "none", // The punishment for sending a voice message longer than the time elapsed since the sending previous one. Possible values: "none", "prevent", "kick"
+  "voice_message_invalid_punishment": "prevent", // The punishment for sending an invalid voice message (longer than maximum configured) or sending a voice message without permission for it. Possible values: "none", "prevent", "kick"
+  "mod_required": false,                         // If true, joining players will be kicked if they don't have this mod installed
+  "mod_not_installed_text": "VoiceMessages is not installed or is of an old version" // The kick message for players that don't have this mod installed
+}
+```
+### Permissions
+- `voicemessages.send` - permission to send voice messages
