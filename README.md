@@ -12,7 +12,7 @@ If a player does not have this mod installed, he will not see voice messages.
 
 ### Config
 Server config is located in `config/voicemessages_server.json` <p>
-Here are the default values with their description: <p>
+Here are the default values with their descriptions: <p>
 ```
 {
   "max_voice_message_duration_ms": 90000,  // The maximum voice message length in milliseconds in range [3_000;300_000]
