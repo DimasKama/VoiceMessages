@@ -4,6 +4,8 @@ plugins {
     id 'com.gradleup.shadow' version '8.3.6' apply false
 }
 
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/1.0.42/taskutils.gradle"
+
 architectury {
     minecraft = project.minecraft_version
 }
@@ -69,5 +71,12 @@ subprojects {
             // The repositories here will be used for publishing your artifact, not for
             // retrieving dependencies.
         }
+    }
+}
+
+tasks.register('publishAllToModrinth') {
+    group = 'publishing'
+    doLast {
+        runGradleTasks(['clean'], ['fabric:modrinth', 'neoforge:modrinth'])
     }
 }

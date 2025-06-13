@@ -1,5 +1,6 @@
 plugins {
     id 'com.gradleup.shadow'
+    id "com.modrinth.minotaur" version "2.+"
 }
 
 architectury {
@@ -65,4 +66,26 @@ shadowJar {
 
 remapJar {
     inputFile.set shadowJar.archiveFile
+}
+
+// Defined in user gradle.properties
+String modrinthToken = property("modrinth_forminotaur_token")
+
+if (modrinthToken) {
+    modrinth {
+        token = modrinthToken
+        projectId = "voicemessages"
+        versionNumber = rootProject.mod_version
+        versionType = "release" // This is the default -- can also be `beta` or `alpha`
+        uploadFile = remapJar
+        gameVersions = [minecraft_version] // Must be an array, even with only one version
+        dependencies { // A special DSL for creating dependencies
+            // scope.type
+            // The scope can be `required`, `optional`, `incompatible`, or `embedded`
+            // The type can either be `project` or `version`
+            required.project "fabric-api"
+            required.project "simple-voice-chat"
+        }
+        changelog = providers.fileContents(parent.layout.projectDirectory.file("changelog.md")).asText.get()
+    }
 }
