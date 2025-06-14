@@ -7,7 +7,7 @@ Requires [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) inst
 ## Good to know
 This mod must be installed both on server and client to work. If a player does not have this mod installed, he will not see voice messages. <p>
 This mod uses the microphone configured in Simple Voice Chat with all its settings. So make sure that `Voice Amplification` in Simple Voice Chat settings is not set to `-100%`. <p>
-Also if voicechat sounds are disabled, you will not hear the voice messages.
+Also, if voicechat sounds are disabled, you will not hear voice messages.
 
 ## Setup on server
 
