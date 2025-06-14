@@ -77,6 +77,6 @@ subprojects {
 tasks.register('publishAllToModrinth') {
     group = 'publishing'
     doLast {
-        runGradleTasks(['clean'], ['fabric:modrinth', 'neoforge:modrinth'])
+        runGradleTasks(['clean'], ['fabric:modrinth'], ['neoforge:modrinth'])
     }
 }
