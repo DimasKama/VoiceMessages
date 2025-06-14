@@ -1,1 +1,1 @@
-- Bump version
+- Fix compatibility with many mods

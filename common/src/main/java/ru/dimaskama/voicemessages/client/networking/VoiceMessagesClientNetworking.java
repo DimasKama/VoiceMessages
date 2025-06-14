@@ -40,12 +40,18 @@ public final class VoiceMessagesClientNetworking {
         MinecraftClient client = MinecraftClient.getInstance();
         client.execute(() -> {
             PlayerListEntry sender = client.getNetworkHandler().getPlayerListEntry(message.sender());
+            Text name;
             if (sender != null) {
+                name = sender.getDisplayName();
+                if (name == null) {
+                    name = Text.literal(sender.getProfile().getName());
+                }
                 VoiceMessages.LOGGER.info("(Client) Received voice message ({}ms) from {}", duration, sender.getProfile().getName());
             } else {
+                name = Text.empty();
                 VoiceMessages.LOGGER.info("(Client) Received voice message ({}ms) from unknown player", duration);
             }
-            client.inGameHud.getChatHud().addMessage(Text.empty(), null, MessageIndicatorHack.createPlayback(sender, audio));
+            client.inGameHud.getChatHud().addMessage(name, null, MessageIndicatorHack.createPlayback(audio));
         });
     }
 

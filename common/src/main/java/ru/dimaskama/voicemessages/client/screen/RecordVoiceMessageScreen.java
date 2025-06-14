@@ -137,6 +137,8 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
 
     @Override
     protected void actualRender(DrawContext context, int mouseX, int mouseY, float delta) {
+        context.getMatrices().push();
+        context.getMatrices().translate(0.0F, 0.0F, 150.0F);
         int bottomY = height - fromBottomY;
         context.fill(leftX - 1, bottomY - 16, leftX + 243, bottomY + 1, 0xFFFFFFFF);
         context.fill(leftX, bottomY - 15, leftX + 242, bottomY, 0xFFFF5555);
@@ -168,6 +170,7 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
         cancelButton.setPosition(leftX + 247 + timeStrWidth + 21, bottomY - 15);
 
         super.actualRender(context, mouseX, mouseY, delta);
+        context.getMatrices().pop();
     }
 
 }

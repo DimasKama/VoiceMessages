@@ -80,7 +80,10 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
 
     @Override
     protected void actualRender(DrawContext context, int mouseX, int mouseY, float delta) {
+        context.getMatrices().push();
+        context.getMatrices().translate(0.0F, 0.0F, 150.0F);
         super.actualRender(context, mouseX, mouseY, delta);
+        context.getMatrices().pop();
     }
 
     @Override

@@ -5,16 +5,13 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Final;
@@ -34,7 +31,6 @@ import ru.dimaskama.voicemessages.duck.client.ChatHudDuck;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Mixin(ChatHud.class)
 abstract class ChatHudMixin implements ChatHudDuck {
@@ -75,36 +71,32 @@ abstract class ChatHudMixin implements ChatHudDuck {
             )
     )
     private int wrapRenderLine(DrawContext instance, TextRenderer textRenderer, OrderedText text, int x, int y, int color, Operation<Integer> original, @Local ChatHudLine.Visible visible) {
+        int addX = original.call(instance, textRenderer, text, x, y, color);
+        if (addX > 0) {
+            addX += 4;
+        }
         if (VoiceMessages.isActive()) {
-            Pair<Optional<PlayerListEntry>, Playback> playbackInfo = MessageIndicatorHack.getPlayback(visible);
-            if (playbackInfo != null) {
-                int addX = playbackInfo.getFirst().map(e -> {
-                    Text displayName = e.getDisplayName();
-                    if (displayName != null) {
-                        return instance.drawTextWithShadow(textRenderer, e.getDisplayName(), x, y, color);
-                    }
-                    return instance.drawTextWithShadow(textRenderer, e.getProfile().getName(), x, y, color);
-                }).orElse(0);
-                if (addX > 0) {
-                    addX += 4;
-                }
+            Playback playback = MessageIndicatorHack.getPlayback(visible);
+            if (playback != null) {
                 int lineHeight = getLineHeight();
-                PlaybackPlayerWidget playbackPlayerWidget = new PlaybackPlayerWidget(PlaybackManager.MAIN, playbackInfo.getSecond(), 0);
+                PlaybackPlayerWidget playbackPlayerWidget = new PlaybackPlayerWidget(PlaybackManager.MAIN, playback, 0);
                 Matrix4f matrix4f = instance.getMatrices().peek().getPositionMatrix();
                 Vector3f vector3f = new Vector3f();
                 vector3f.set(x + addX, y - ((lineHeight - 9) >> 1), 0.0F);
                 matrix4f.transformPosition(vector3f);
+                int playbackWidth = getWidth() - addX - x;
                 playbackPlayerWidget.setDimensionsAndPosition(
-                        getWidth() - addX - x,
+                        playbackWidth,
                         lineHeight,
                         (int) vector3f.x,
                         (int) vector3f.y
                 );
+                addX += playbackWidth;
                 playbackPlayerWidget.setScale((float) getChatScale());
                 voicemessages_visiblePlaybackPlayerWidgets.add(playbackPlayerWidget);
             }
         }
-        return original.call(instance, textRenderer, text, x, y, color);
+        return addX;
     }
 
     @Inject(method = "render", at = @At("TAIL"))
@@ -130,9 +122,9 @@ abstract class ChatHudMixin implements ChatHudDuck {
     )
     private Object clearRemovedMessage(Object original) {
         if (VoiceMessages.isActive()) {
-            Pair<Optional<PlayerListEntry>, Playback> playbackInfo = MessageIndicatorHack.getPlayback((ChatHudLine.Visible) original);
-            if (playbackInfo != null) {
-                PlaybackManager.MAIN.remove(playbackInfo.getSecond());
+            Playback playback = MessageIndicatorHack.getPlayback((ChatHudLine.Visible) original);
+            if (playback != null) {
+                PlaybackManager.MAIN.remove(playback);
             }
             return original;
         }
