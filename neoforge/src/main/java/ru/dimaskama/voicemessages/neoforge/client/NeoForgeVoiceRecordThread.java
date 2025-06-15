@@ -3,14 +3,14 @@ package ru.dimaskama.voicemessages.neoforge.client;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.MicThread;
-import ru.dimaskama.voicemessages.VoiceMessagesService;
+import ru.dimaskama.voicemessages.VoiceMessagesModService;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class NeoForgeVoiceRecordThread extends Thread implements VoiceMessagesService.VoiceRecordThread {
+public class NeoForgeVoiceRecordThread extends Thread implements VoiceMessagesModService.VoiceRecordThread {
 
     private static final AtomicInteger THREAD_COUNT = new AtomicInteger();
     private final Predicate<short[]> frameConsumer;

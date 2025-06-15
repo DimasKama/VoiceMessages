@@ -1,1 +1,1 @@
-- Fix compatibility with many mods
+- Update mod version format

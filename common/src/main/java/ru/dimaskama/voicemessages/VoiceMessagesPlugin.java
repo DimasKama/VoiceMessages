@@ -13,7 +13,7 @@ public class VoiceMessagesPlugin implements VoicechatPlugin {
 
     @Override
     public String getPluginId() {
-        return VoiceMessages.MOD_ID;
+        return VoiceMessages.ID;
     }
 
     @Override

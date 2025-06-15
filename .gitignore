@@ -13,3 +13,6 @@
 /neoforge/run/
 /fabric/run/
 /.idea/
+/common-mod/.gradle/
+/common-mod/build/
+/neoforge/runs/

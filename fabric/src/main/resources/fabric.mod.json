@@ -26,8 +26,8 @@
     "voicemessages-fabric.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.16.7",
-    "minecraft": ">=1.21.4",
+    "fabricloader": "*",
+    "minecraft": ">=${minecraft_version}",
     "java": ">=21",
     "fabric-api": "*"
   },

@@ -16,21 +16,19 @@ logoFile = "icon.png"
 [[dependencies.voicemessages]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.4,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.voicemessages]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.4,)"
+versionRange = "[${minecraft_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.voicemessages]]
 modId = "voicechat"
 type = "optional"
-versionRange = "(,)"
 ordering = "NONE"
 side = "BOTH"
 

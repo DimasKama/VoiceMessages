@@ -1,14 +1,14 @@
 package ru.dimaskama.voicemessages.fabric.client;
 
 import de.maxhenkel.voicechat.voice.client.*;
-import ru.dimaskama.voicemessages.VoiceMessagesService;
+import ru.dimaskama.voicemessages.VoiceMessagesModService;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class FabricVoiceRecordThread extends Thread implements VoiceMessagesService.VoiceRecordThread {
+public class FabricVoiceRecordThread extends Thread implements VoiceMessagesModService.VoiceRecordThread {
 
     private static final AtomicInteger THREAD_COUNT = new AtomicInteger();
     private final Predicate<short[]> frameConsumer;

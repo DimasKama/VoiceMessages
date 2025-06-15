@@ -7,13 +7,14 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.*;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.server.network.ServerConfigurationNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesEvents;
-import ru.dimaskama.voicemessages.VoiceMessagesService;
+import ru.dimaskama.voicemessages.VoiceMessagesMod;
+import ru.dimaskama.voicemessages.VoiceMessagesModService;
 import ru.dimaskama.voicemessages.fabric.client.FabricVoiceRecordThread;
 import ru.dimaskama.voicemessages.networking.*;
 
@@ -25,34 +26,34 @@ public final class VoiceMessagesFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        VoiceMessages.init(new VoiceMessagesService() {
+        VoiceMessagesMod.init(new VoiceMessagesModService() {
             @Override
             public boolean isModLoaded(String modId) {
                 return FabricLoader.getInstance().isModLoaded(modId);
             }
 
             @Override
-            public void sendToServer(CustomPayload payload) {
+            public void sendToServer(CustomPacketPayload payload) {
                 ClientPlayNetworking.send(payload);
             }
 
             @Override
-            public boolean canSendToServer(Identifier payloadId) {
+            public boolean canSendToServer(ResourceLocation payloadId) {
                 return ClientPlayNetworking.canSend(payloadId);
             }
 
             @Override
-            public void sendToPlayer(ServerPlayerEntity player, CustomPayload payload) {
+            public void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
                 ServerPlayNetworking.send(player, payload);
             }
 
             @Override
-            public boolean canSendToPlayer(ServerPlayerEntity player, Identifier payloadId) {
+            public boolean canSendToPlayer(ServerPlayer player, ResourceLocation payloadId) {
                 return ServerPlayNetworking.canSend(player, payloadId);
             }
 
             @Override
-            public boolean canSendConfigurationToPlayer(ServerConfigurationNetworkHandler handler, Identifier payloadId) {
+            public boolean canSendConfigurationToPlayer(ServerConfigurationPacketListenerImpl handler, ResourceLocation payloadId) {
                 return ServerConfigurationNetworking.canSend(handler, payloadId);
             }
 
@@ -62,20 +63,20 @@ public final class VoiceMessagesFabric implements ModInitializer {
             }
 
             @Override
-            public boolean hasVoiceMessageSendPermission(ServerPlayerEntity player) {
+            public boolean hasVoiceMessageSendPermission(ServerPlayer player) {
                 return Permissions.check(player, VoiceMessages.VOICE_MESSAGE_SEND_PERMISSION, 0);
             }
         });
 
-        if (VoiceMessages.isActive()) {
-            PayloadTypeRegistry.configurationS2C().register(VoiceMessagesConfigS2C.ID, VoiceMessagesConfigS2C.PACKET_CODEC);
+        if (VoiceMessagesMod.isActive()) {
+            PayloadTypeRegistry.configurationS2C().register(VoiceMessagesConfigS2C.TYPE, VoiceMessagesConfigS2C.PACKET_CODEC);
             ServerConfigurationConnectionEvents.BEFORE_CONFIGURE.register((handler, server) ->
                     VoiceMessagesEvents.onRegisterConfigurationTasks(handler, handler::addTask, handler::completeTask));
 
-            PayloadTypeRegistry.playS2C().register(VoiceMessagesPermissionsS2C.ID, VoiceMessagesPermissionsS2C.PACKET_CODEC);
-            PayloadTypeRegistry.playS2C().register(VoiceMessageS2C.ID, VoiceMessageS2C.PACKET_CODEC);
-            PayloadTypeRegistry.playC2S().register(VoiceMessageC2S.ID, VoiceMessageC2S.PACKET_CODEC);
-            ServerPlayNetworking.registerGlobalReceiver(VoiceMessageC2S.ID, (payload, context) ->
+            PayloadTypeRegistry.playS2C().register(VoiceMessagesPermissionsS2C.TYPE, VoiceMessagesPermissionsS2C.PACKET_CODEC);
+            PayloadTypeRegistry.playS2C().register(VoiceMessageS2C.TYPE, VoiceMessageS2C.STREAM_CODEC);
+            PayloadTypeRegistry.playC2S().register(VoiceMessageC2S.TYPE, VoiceMessageC2S.STREAM_CODEC);
+            ServerPlayNetworking.registerGlobalReceiver(VoiceMessageC2S.TYPE, (payload, context) ->
                     VoiceMessagesServerNetworking.onVoiceMessageReceived(context.player(), payload));
 
             ServerLifecycleEvents.SERVER_STARTED.register(VoiceMessagesEvents::onServerStarted);
