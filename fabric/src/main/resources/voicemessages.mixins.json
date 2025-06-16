@@ -7,9 +7,11 @@
     "client.ChatComponentMixin",
     "client.ChatScreenMixin",
     "client.GuiMessageLineMixin",
-    "client.ScreenAccessor"
+    "client.ScreenAccessor",
+    "client.MinecraftMixin"
   ],
   "mixins": [
+    "ServerPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

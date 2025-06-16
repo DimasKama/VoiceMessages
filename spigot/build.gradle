@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+}
+
+apply plugin: 'com.gradleup.shadow'
+apply plugin: 'com.modrinth.minotaur'
+apply plugin: 'xyz.jpenilla.run-paper'
+
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+repositories {
+    mavenCentral()
+
+    maven {
+        name = "spigotmc-repo"
+        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+    }
+    maven {
+        url "https://libraries.minecraft.net"
+    }
+}
+
+dependencies {
+    compileOnly("org.spigotmc:spigot-api:${spigot_version}")
+    implementation "com.mojang:datafixerupper:${datafixerupper_version}"
+}
+
+processResources {
+    filesMatching('plugin.yml') {
+        expand 'version': version
+    }
+}
+
+tasks {
+    runServer {
+        minecraftVersion(minecraft_version)
+        downloadPlugins {
+            modrinth("simple-voice-chat", "bukkit-${voicechat_mod_version}")
+        }
+    }
+}
+
+build.dependsOn(shadowJar)
+runServer.dependsOn(build)

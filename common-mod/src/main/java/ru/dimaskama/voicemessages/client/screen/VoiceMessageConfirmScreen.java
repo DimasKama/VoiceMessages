@@ -1,5 +1,6 @@
 package ru.dimaskama.voicemessages.client.screen;
 
+import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -13,7 +14,7 @@ import ru.dimaskama.voicemessages.VoiceMessagesPlugin;
 import ru.dimaskama.voicemessages.client.Playback;
 import ru.dimaskama.voicemessages.client.PlaybackManager;
 import ru.dimaskama.voicemessages.client.screen.widget.PlaybackPlayerWidget;
-import ru.dimaskama.voicemessages.networking.VoiceMessageC2S;
+import ru.dimaskama.voicemessages.networking.VoiceMessageChunkC2S;
 
 import java.util.List;
 
@@ -52,8 +53,12 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
                 SEND_SPRITES,
                 button -> {
                     List<short[]> audio = playback.getAudio();
-                    VoiceMessagesMod.getService().sendToServer(new VoiceMessageC2S(VoiceMessagesPlugin.getClientOpus().encode(audio)));
-                    VoiceMessages.LOGGER.info("Sent voice message ({}ms)", 1000 * audio.size() / VoiceMessages.FRAMES_PER_SEC);
+                    OpusEncoder encoder = VoiceMessagesPlugin.getClientOpusEncoder();
+                    encoder.resetState();
+                    for (VoiceMessageChunkC2S chunk : VoiceMessageChunkC2S.split(VoiceMessagesPlugin.encodeList(encoder, audio))) {
+                        VoiceMessagesMod.getService().sendToServer(chunk);
+                    }
+                    VoiceMessages.getLogger().info("Sent voice message (" + (1000 * audio.size() / VoiceMessages.FRAMES_PER_SEC) + "ms)");
                     onClose();
                 }
         ));

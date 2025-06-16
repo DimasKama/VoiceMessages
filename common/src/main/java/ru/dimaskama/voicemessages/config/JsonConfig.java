@@ -48,13 +48,13 @@ public class JsonConfig<D> {
         if (!file.exists()) {
             File parent = file.getParentFile();
             if (!(parent.exists() || parent.mkdirs())) {
-                VoiceMessages.LOGGER.warn("Can't create config: {}", file.getAbsolutePath());
+                VoiceMessages.getLogger().warn("Can't create config: " + file.getAbsolutePath());
                 return;
             }
             try {
                 saveWithoutCatch();
             } catch (IOException e) {
-                VoiceMessages.LOGGER.warn("Exception occurred while writing new config. ", e);
+                VoiceMessages.getLogger().warn("Exception occurred while writing new config. ", e);
             }
         } else {
             load(file);
@@ -65,7 +65,7 @@ public class JsonConfig<D> {
         try (FileReader f = new FileReader(file)) {
             deserialize(JsonParser.parseReader(f));
         } catch (Exception e) {
-            VoiceMessages.LOGGER.warn("Exception occurred while reading config. ", e);
+            VoiceMessages.getLogger().warn("Exception occurred while reading config. ", e);
         }
     }
 
@@ -80,9 +80,9 @@ public class JsonConfig<D> {
     public void save(boolean log) {
         try {
             saveWithoutCatch();
-            if (log) VoiceMessages.LOGGER.info("Config saved: {}", getPath());
+            if (log) VoiceMessages.getLogger().info("Config saved: " + getPath());
         } catch (IOException e) {
-            VoiceMessages.LOGGER.warn("Exception occurred while saving config. ", e);
+            VoiceMessages.getLogger().warn("Exception occurred while saving config. ", e);
         }
     }
 

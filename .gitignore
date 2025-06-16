@@ -16,3 +16,5 @@
 /common-mod/.gradle/
 /common-mod/build/
 /neoforge/runs/
+/spigot/run/
+/spigot/build/

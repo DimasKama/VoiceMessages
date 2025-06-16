@@ -1,0 +1,11 @@
+name: voicemessages
+version: ${version}
+main: ru.dimaskama.voicemessages.spigot.VoiceMessagesSpigot
+description: Voice messages in minecraft chat
+author: DimasKama
+depend:
+  - voicechat
+permissions:
+  voicemessages.send:
+    default: true
+    description: Allows you to send voice messages

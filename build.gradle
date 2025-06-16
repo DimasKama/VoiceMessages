@@ -2,13 +2,28 @@ plugins {
     id 'com.gradleup.shadow' version "${shadow_version}" apply false
     id 'com.modrinth.minotaur' version "${minotaur_version}" apply false
     id 'fabric-loom' version "${fabric_loom_version}" apply false
+    id 'xyz.jpenilla.run-paper' version "${run_task_version}" apply false
 }
 
 apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/taskutils.gradle"
 
-tasks.register('publishAll') {
+tasks.register('publishModsToModrinth') {
     group = 'voicemessages'
     doLast {
         runGradleTasks(['clean'], ['neoforge:modrinth', 'fabric:modrinth'])
+    }
+}
+
+tasks.register('publishPluginToModrinth') {
+    group = 'voicemessages'
+    doLast {
+        runGradleTasks(['clean'], ['spigot:modrinth'])
+    }
+}
+
+tasks.register('publishAllToModrinth') {
+    group = 'voicemessages'
+    doLast {
+        runGradleTasks(['clean'], ['neoforge:modrinth', 'fabric:modrinth', 'spigot:modrinth'])
     }
 }

@@ -18,7 +18,6 @@ import ru.dimaskama.voicemessages.client.networking.VoiceMessagesClientNetworkin
 import ru.dimaskama.voicemessages.client.screen.RecordVoiceMessageScreen;
 import ru.dimaskama.voicemessages.client.screen.widget.PlaybackPlayerWidget;
 import ru.dimaskama.voicemessages.duck.client.ChatComponentDuck;
-import ru.dimaskama.voicemessages.networking.VoiceMessageC2S;
 
 @Mixin(ChatScreen.class)
 abstract class ChatScreenMixin extends Screen {
@@ -44,8 +43,7 @@ abstract class ChatScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void initTail(CallbackInfo ci) {
         if (VoiceMessagesMod.isActive()) {
-            voicemessages_canSendVoiceMessages = VoiceMessagesClientNetworking.canSendVoiceMessages()
-                    && VoiceMessagesMod.getService().canSendToServer(VoiceMessageC2S.TYPE.id());
+            voicemessages_canSendVoiceMessages = VoiceMessagesClientNetworking.canSendVoiceMessages();
             if (voicemessages_canSendVoiceMessages) {
                 int x = input.getX();
                 int y = input.getY();

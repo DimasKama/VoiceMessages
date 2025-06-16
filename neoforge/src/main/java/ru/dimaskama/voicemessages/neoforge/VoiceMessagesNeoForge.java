@@ -3,8 +3,8 @@ package ru.dimaskama.voicemessages.neoforge;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -31,7 +31,7 @@ public final class VoiceMessagesNeoForge {
     );
 
     public VoiceMessagesNeoForge() {
-        VoiceMessagesMod.init(new VoiceMessagesModService() {
+        VoiceMessagesMod.init(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion().toString(), new VoiceMessagesModService() {
             @Override
             public boolean isModLoaded(String modId) {
                 return ModList.get().isLoaded(modId);
@@ -50,16 +50,6 @@ public final class VoiceMessagesNeoForge {
             @Override
             public void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
                 PacketDistributor.sendToPlayer(player, payload);
-            }
-
-            @Override
-            public boolean canSendToPlayer(ServerPlayer player, ResourceLocation payloadId) {
-                return player.connection.hasChannel(payloadId);
-            }
-
-            @Override
-            public boolean canSendConfigurationToPlayer(ServerConfigurationPacketListenerImpl handler, ResourceLocation payloadId) {
-                return handler.hasChannel(payloadId);
             }
 
             @Override

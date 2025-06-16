@@ -3,7 +3,6 @@ package ru.dimaskama.voicemessages;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -18,10 +17,6 @@ public interface VoiceMessagesModService {
     boolean canSendToServer(ResourceLocation payloadId);
 
     void sendToPlayer(ServerPlayer player, CustomPacketPayload payload);
-
-    boolean canSendToPlayer(ServerPlayer player, ResourceLocation payloadId);
-
-    boolean canSendConfigurationToPlayer(ServerConfigurationPacketListenerImpl handler, ResourceLocation payloadId);
 
     VoiceRecordThread createVoiceRecordThread(Predicate<short[]> frameConsumer, Consumer<IOException> onMicError);
 

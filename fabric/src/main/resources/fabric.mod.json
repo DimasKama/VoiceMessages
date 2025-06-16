@@ -22,8 +22,7 @@
     ]
   },
   "mixins": [
-    "voicemessages.mixins.json",
-    "voicemessages-fabric.mixins.json"
+    "voicemessages.mixins.json"
   ],
   "depends": {
     "fabricloader": "*",

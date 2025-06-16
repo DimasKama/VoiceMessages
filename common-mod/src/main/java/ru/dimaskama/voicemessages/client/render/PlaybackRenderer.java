@@ -44,7 +44,6 @@ public final class PlaybackRenderer {
         } catch (Exception e) {
             return 0L;
         }
-        //todo test performance
         return Arrays.hashCode(firstFrame);
     }
 

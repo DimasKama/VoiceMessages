@@ -102,7 +102,7 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
     public void tick() {
         super.tick();
         if (microphoneException != null) {
-            VoiceMessages.LOGGER.warn("Microphone error", microphoneException);
+            VoiceMessages.getLogger().warn("Microphone error", microphoneException);
             minecraft.player.displayClientMessage(Component.translatable("voicemessages.microphone_error", microphoneException.getLocalizedMessage())
                     .withStyle(ChatFormatting.RED), true);
             minecraft.setScreen(null);
