@@ -114,7 +114,9 @@ public class PacketUtils {
         long packedSize = readVarInt(bytes, position);
         int offset = unpackSize(packedSize);
         int size = unpackInt(packedSize);
-        return Pair.of(new String(bytes, offset, size, StandardCharsets.UTF_8), offset);
+        String string = new String(bytes, offset, size, StandardCharsets.UTF_8);
+        offset += size;
+        return Pair.of(string, offset);
     }
 
 }

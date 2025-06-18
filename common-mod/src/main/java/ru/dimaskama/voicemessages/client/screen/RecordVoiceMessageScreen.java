@@ -1,5 +1,9 @@
 package ru.dimaskama.voicemessages.client.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.floats.FloatList;
+import it.unimi.dsi.fastutil.floats.FloatLists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
@@ -11,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.VoiceMessagesModService;
+import ru.dimaskama.voicemessages.client.Playback;
 import ru.dimaskama.voicemessages.client.PlaybackManager;
 import ru.dimaskama.voicemessages.client.networking.VoiceMessagesClientNetworking;
 import ru.dimaskama.voicemessages.client.render.PlaybackRenderer;
@@ -34,6 +39,7 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
     private final int fromBottomY;
     private volatile boolean recorded;
     private List<short[]> recordedFrames = new ArrayList<>();
+    private FloatList audioLevels = new FloatArrayList();
     private VoiceMessagesModService.VoiceRecordThread recordThread;
     private Exception microphoneException;
     private ImageButton doneButton, cancelButton;
@@ -77,6 +83,7 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
 
     private boolean appendFrame(short[] frame) {
         recordedFrames.add(frame);
+        audioLevels.add(Playback.calculateAudioLevel(frame));
         if (recordedFrames.size() < VoiceMessagesClientNetworking.getMaxVoiceMessageFrames()) {
             return true;
         }
@@ -95,6 +102,7 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
 
     private void onStoppedRecording() {
         recordedFrames = Collections.unmodifiableList(recordedFrames);
+        audioLevels = FloatLists.unmodifiable(audioLevels);
         recorded = true;
     }
 
@@ -127,6 +135,18 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
     }
 
     @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+        if (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_NUMPADENTER) {
+            onClose();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean isPauseScreen() {
         return false;
     }
@@ -143,16 +163,17 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
         int bottomY = height - fromBottomY;
         guiGraphics.fill(leftX - 1, bottomY - 16, leftX + 243, bottomY + 1, 0xFFFFFFFF);
         guiGraphics.fill(leftX, bottomY - 15, leftX + 242, bottomY, 0xFFFF5555);
-        float recordProgress = (float) recordedFrames.size() / VoiceMessagesClientNetworking.getMaxVoiceMessageFrames();
+        int maxFrames = VoiceMessagesClientNetworking.getMaxVoiceMessageFrames();
+        float recordProgress = (float) recordedFrames.size() / maxFrames;
         PlaybackRenderer.renderPlayback(
                 guiGraphics,
                 leftX + 1,
                 bottomY - 15,
                 240,
                 15,
-                PlaybackRenderer.getSeed(recordedFrames),
                 recordProgress,
-                recordProgress
+                maxFrames,
+                audioLevels
         );
         int maxDuration = VoiceMessagesClientNetworking.getMaxVoiceMessageDurationMs();
         String timeStr = PlaybackPlayerWidget.formatTime((int) (recordProgress * maxDuration))

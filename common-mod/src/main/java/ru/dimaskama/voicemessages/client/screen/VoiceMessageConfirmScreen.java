@@ -1,5 +1,6 @@
 package ru.dimaskama.voicemessages.client.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
@@ -52,13 +53,7 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
                 14,
                 SEND_SPRITES,
                 button -> {
-                    List<short[]> audio = playback.getAudio();
-                    OpusEncoder encoder = VoiceMessagesPlugin.getClientOpusEncoder();
-                    encoder.resetState();
-                    for (VoiceMessageChunkC2S chunk : VoiceMessageChunkC2S.split(VoiceMessagesPlugin.encodeList(encoder, audio))) {
-                        VoiceMessagesMod.getService().sendToServer(chunk);
-                    }
-                    VoiceMessages.getLogger().info("Sent voice message (" + (1000 * audio.size() / VoiceMessages.FRAMES_PER_SEC) + "ms)");
+                    send();
                     onClose();
                 }
         ));
@@ -72,6 +67,16 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
                 button -> onClose()
         ));
         cancelButton.setTooltip(Tooltip.create(CommonComponents.GUI_CANCEL));
+    }
+
+    private void send() {
+        List<short[]> audio = playback.getAudio();
+        OpusEncoder encoder = VoiceMessagesPlugin.getClientOpusEncoder();
+        encoder.resetState();
+        for (VoiceMessageChunkC2S chunk : VoiceMessageChunkC2S.split(VoiceMessagesPlugin.encodeList(encoder, audio))) {
+            VoiceMessagesMod.getService().sendToServer(chunk);
+        }
+        VoiceMessages.getLogger().info("Sent voice message (" + (1000 * audio.size() / VoiceMessages.FRAMES_PER_SEC) + "ms)");
     }
 
     @Override
@@ -90,6 +95,19 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
         guiGraphics.pose().translate(0.0F, 0.0F, 150.0F);
         super.actualRender(guiGraphics, mouseX, mouseY, delta);
         guiGraphics.pose().popPose();
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+        if (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_NUMPADENTER) {
+            send();
+            onClose();
+            return true;
+        }
+        return false;
     }
 
     @Override

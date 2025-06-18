@@ -1,6 +1,9 @@
 package ru.dimaskama.voicemessages.client;
 
 import de.maxhenkel.voicechat.api.audiochannel.ClientAudioChannel;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.floats.FloatList;
+import net.minecraft.util.Mth;
 import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesPlugin;
 
@@ -18,16 +21,22 @@ public class Playback {
             new Thread(r, "VoiceMessagesPlayer"));
     private final ClientAudioChannel channel;
     private final List<short[]> audio;
+    private final FloatList audioLevels;
     private final AtomicInteger framePosition = new AtomicInteger();
     private volatile ScheduledFuture<?> playFuture;
 
     public Playback(List<short[]> audio) {
-        this(createChannel(), audio);
+        this(audio, calculateAudioLevels(audio));
     }
 
-    public Playback(ClientAudioChannel channel, List<short[]> audio) {
+    public Playback(List<short[]> audio, FloatList audioLevels) {
+        this(createChannel(), audio, audioLevels);
+    }
+
+    public Playback(ClientAudioChannel channel, List<short[]> audio, FloatList audioLevels) {
         this.channel = channel;
         this.audio = audio;
+        this.audioLevels = audioLevels;
     }
 
     private static ClientAudioChannel createChannel() {
@@ -42,6 +51,10 @@ public class Playback {
 
     public List<short[]> getAudio() {
         return audio;
+    }
+
+    public FloatList getAudioLevels() {
+        return audioLevels;
     }
 
     public int getFramePosition() {
@@ -60,28 +73,22 @@ public class Playback {
         framePosition.set(Math.round(progress * audio.size()));
     }
 
-    public boolean isPlaying() {
-        synchronized (this) {
-            return playFuture != null && !playFuture.isDone();
+    public synchronized boolean isPlaying() {
+        return playFuture != null && !playFuture.isDone();
+    }
+
+    public synchronized void play() {
+        if (getProgress() >= 1.0F) {
+            setProgress(0.0F);
+        }
+        if (playFuture == null || playFuture.isDone()) {
+            playFuture = SOUND_PLAYER_EXECUTOR.scheduleAtFixedRate(this::playNextFrame, 0L, 1000L / VoiceMessages.FRAMES_PER_SEC, TimeUnit.MILLISECONDS);
         }
     }
 
-    public void play() {
-        synchronized (this) {
-            if (getProgress() >= 1.0F) {
-                setProgress(0.0F);
-            }
-            if (playFuture == null || playFuture.isDone()) {
-                playFuture = SOUND_PLAYER_EXECUTOR.scheduleAtFixedRate(this::playNextFrame, 0L, 1000L / VoiceMessages.FRAMES_PER_SEC, TimeUnit.MILLISECONDS);
-            }
-        }
-    }
-
-    public void stop() {
-        synchronized (this) {
-            if (playFuture != null) {
-                playFuture.cancel(true);
-            }
+    public synchronized void stop() {
+        if (playFuture != null) {
+            playFuture.cancel(true);
         }
     }
 
@@ -91,6 +98,32 @@ public class Playback {
             throw new RuntimeException("playback finished");
         }
         channel.play(audio.get(pos));
+    }
+
+    public static float calculateAudioLevel(short[] frame) {
+        float rms = 0.0F;
+
+        for (short value : frame) {
+            float sample = (float) value / 32767.0F;
+            rms += sample * sample;
+        }
+
+        int sampleCount = frame.length / 2;
+        rms = sampleCount == 0 ? 0.0F : (float) Math.sqrt(rms / sampleCount);
+
+        float db = rms > 0.0F
+                ? Math.min(Math.max(20.0F * (float) Math.log10(rms), -127.0F), 0.0F)
+                : -127.0F;
+
+        return Mth.clamp(Mth.inverseLerp(db, -40.0F, -15.0F), 0.0F, 0.999F);
+    }
+
+    public static FloatList calculateAudioLevels(List<short[]> audio) {
+        FloatList levels = new FloatArrayList(audio.size());
+        for (short[] shorts : audio) {
+            levels.add(calculateAudioLevel(shorts));
+        }
+        return levels;
     }
 
 }

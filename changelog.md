@@ -1,4 +1,3 @@
 ### Fabric & Forge
-- Update protocol. Mod is not compatible with versions before 0.1.0 now
-### Spigot
-- Added support
+- Audio track now reflects the actual volume instead of random values
+- Voice messages can be sent by the enter key

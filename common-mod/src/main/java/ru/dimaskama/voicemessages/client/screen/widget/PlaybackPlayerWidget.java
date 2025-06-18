@@ -76,7 +76,7 @@ public class PlaybackPlayerWidget extends AbstractWidget {
                 guiGraphics.fill(playbackX - 1, playbackY - 1, playbackX + playbackWidth + 1, playbackY + playbackHeight + 1, 0xFFFFFFFF);
                 guiGraphics.fill(playbackX, playbackY, playbackX + playbackWidth, playbackY + playbackHeight, backgroundColor);
             }
-            PlaybackRenderer.renderPlayback(guiGraphics, playbackX, playbackY, playbackWidth, playbackHeight, playback, 1.0F);
+            PlaybackRenderer.renderPlayback(guiGraphics, playbackX, playbackY, playbackWidth, playbackHeight, playback);
         }
         if (renderTimeStr) {
             guiGraphics.drawString(
