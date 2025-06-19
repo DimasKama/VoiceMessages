@@ -1,0 +1,16 @@
+{
+  "voicemessages.voice_message": "Голосове повідомлення",
+  "voicemessages.voice_message_to": "Голосове повідомлення %s",
+  "voicemessages.recording": "Запис голосового повідомлення",
+  "voicemessages.confirm": "Підтвердити надсилання голосового повідомлення",
+  "voicemessages.send": "Надіслати голосове повідомлення",
+  "voicemessages.to": "Для: %s",
+  "voicemessages.target.all": "усіх",
+  "voicemessages.target.team": "команди",
+  "voicemessages.kick.permission_violated": "Дозвіл на голосові повідомлення порушено",
+  "voicemessages.kick.unknown_target": "Невідома ціль голосового повідомлення",
+  "voicemessages.kick.invalid": "Ви надіслали недійсне голосове повідомлення",
+  "voicemessages.kick.spam": "Довжина надісланого голосового повідомлення перевищує час, що минув з попереднього",
+  "voicemessages.microphone_error": "Помилка мікрофона: %s",
+  "voicemessages.unknown_target": "Невідома ціль: %s"
+}
