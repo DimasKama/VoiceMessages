@@ -38,4 +38,22 @@ Here are the default values with their descriptions: <p>
 - `voicemessages.send.players` - permission to send private voice messages to players. Default: `true`
 
 ## API
-This mod has its own API.
+This mod has its own API. <p>
+Setup in `build.gradle`:
+```
+repositories {
+    // Other repositories
+    
+    maven {
+        name "KvotheShaed Releases"
+        url "https://maven.kvotheshaed.ru/releases"
+    }
+}
+
+dependencies {
+    // Other dependencies
+
+    // Voice Messages API
+    compileOnly "ru.dimaskama.voicemessages:voicemessages-api:${voicemessages_api_version}"
+}
+```
