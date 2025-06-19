@@ -15,6 +15,11 @@ public final class VoiceMessages {
             ServerConfig::new
     );
     public static final String VOICE_MESSAGE_SEND_PERMISSION = "voicemessages.send";
+    public static final String VOICE_MESSAGE_SEND_ALL_PERMISSION = "voicemessages.send.all";
+    public static final String VOICE_MESSAGE_SEND_TEAM_PERMISSION = "voicemessages.send.team";
+    public static final String VOICE_MESSAGE_SEND_PLAYERS_PERMISSION = "voicemessages.send.players";
+    public static final String TARGET_ALL = "all";
+    public static final String TARGET_TEAM = "team";
     public static final int SAMPLE_RATE = 48000;
     public static final int FRAME_SIZE = 960;
     public static final int FRAMES_PER_SEC = SAMPLE_RATE / FRAME_SIZE;
@@ -38,7 +43,7 @@ public final class VoiceMessages {
     }
 
     public static boolean isClientVersionCompatible(String modVersion) {
-        return getVersionFromModVersion(modVersion).compareTo("0.1.0") >= 0;
+        return getVersionFromModVersion(modVersion).compareTo("1.0.0") >= 0;
     }
 
     public static String getVersionFromModVersion(String modVersion) {

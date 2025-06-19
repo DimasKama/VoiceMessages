@@ -1,6 +1,7 @@
 package ru.dimaskama.voicemessages.fabric.client;
 
 import de.maxhenkel.voicechat.voice.client.*;
+import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesModService;
 
 import java.io.IOException;
@@ -56,9 +57,9 @@ public class FabricVoiceRecordThread extends Thread implements VoiceMessagesModS
     public void stopVoiceRecord() {
         try {
             running = false;
-            join();
+            join(1000L);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            VoiceMessages.getLogger().error("Failed to join voice record thread", e);
         }
     }
 

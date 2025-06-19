@@ -9,6 +9,13 @@ This mod must be installed both on server and client to work. If a player does n
 This mod uses the microphone configured in Simple Voice Chat with all its settings. So make sure that `Voice Amplification` in Simple Voice Chat settings is not set to `-100%`. <p>
 Also, if voicechat sounds are disabled, you will not hear voice messages.
 
+## Private voice messages
+
+You can send private voice messages to players or to your team with `/voicemsg <target>` or `/vmsg <target>` commands. <p>
+Note that server can restrict you from sending them by permissions
+
+![command preview gif](images/command_preview.gif)
+
 ## Setup on server
 
 ### Config
@@ -23,5 +30,12 @@ Here are the default values with their descriptions: <p>
   "mod_not_installed_text": "VoiceMessages is not installed or is of an old version" // The kick message for players that don't have this mod installed
 }
 ```
+
 ### Permissions
-- `voicemessages.send` - permission to send voice messages
+- `voicemessages.send` - permission to send voice messages. Default: `true`
+- `voicemessages.send.all` - permission to send voice messages to global chat. Default: `true`
+- `voicemessages.send.team` - permission to send private voice messages to player's team. Default: `true`
+- `voicemessages.send.players` - permission to send private voice messages to players. Default: `true`
+
+## API
+This mod has its own API.

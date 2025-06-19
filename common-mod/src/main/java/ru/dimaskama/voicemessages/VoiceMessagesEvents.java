@@ -3,8 +3,9 @@ package ru.dimaskama.voicemessages;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import ru.dimaskama.voicemessages.api.VoiceMessagesApiInitCallback;
 import ru.dimaskama.voicemessages.config.ServerConfig;
-import ru.dimaskama.voicemessages.networking.VoiceMessagesPermissionsS2C;
+import ru.dimaskama.voicemessages.impl.VoiceMessagesApiImpl;
 import ru.dimaskama.voicemessages.networking.VoiceMessagesServerNetworking;
 
 public final class VoiceMessagesEvents {
@@ -12,6 +13,7 @@ public final class VoiceMessagesEvents {
     public static void onServerStarted(MinecraftServer server) {
         if (VoiceMessagesMod.isActive()) {
             VoiceMessages.SERVER_CONFIG.loadOrCreate();
+            VoiceMessagesApiInitCallback.EVENT.invoker().setVoiceMessagesApi(new VoiceMessagesApiImpl(server));
         }
     }
 
@@ -28,11 +30,6 @@ public final class VoiceMessagesEvents {
                 player.connection.disconnect(Component.literal(config.modNotInstalledText()));
             }
         }
-    }
-
-    public static void sendPermissions(ServerPlayer player) {
-        VoiceMessagesModService service = VoiceMessagesMod.getService();
-        service.sendToPlayer(player, new VoiceMessagesPermissionsS2C(service.hasVoiceMessageSendPermission(player)));
     }
 
 }

@@ -10,4 +10,4 @@ pluginManagement {
 
 rootProject.name = 'voicemessages'
 
-include('common', 'common-mod', 'fabric', 'neoforge', 'spigot')
+include('api', 'common', 'common-mod', 'fabric', 'neoforge', 'spigot')

@@ -12,6 +12,7 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.VoiceMessagesModService;
@@ -37,6 +38,9 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
     );
     private final int leftX;
     private final int fromBottomY;
+    private final String target;
+    @Nullable
+    private final Component targetText;
     private volatile boolean recorded;
     private List<short[]> recordedFrames = new ArrayList<>();
     private FloatList audioLevels = new FloatArrayList();
@@ -44,10 +48,12 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
     private Exception microphoneException;
     private ImageButton doneButton, cancelButton;
 
-    public RecordVoiceMessageScreen(Screen parent, int leftX, int fromBottomY) {
+    public RecordVoiceMessageScreen(Screen parent, int leftX, int fromBottomY, String target) {
         super(Component.translatable("voicemessages.recording"), parent);
         this.leftX = leftX;
         this.fromBottomY = fromBottomY;
+        this.target = target;
+        targetText = VoiceMessageConfirmScreen.getScreenTargetText(target);
     }
 
     @Override
@@ -124,7 +130,7 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
         if (recordedFrames.isEmpty()) {
             super.onClose();
         } else {
-            minecraft.setScreen(new VoiceMessageConfirmScreen(parent, leftX, fromBottomY, recordedFrames));
+            minecraft.setScreen(new VoiceMessageConfirmScreen(parent, leftX, fromBottomY, recordedFrames, target));
         }
     }
 
@@ -179,17 +185,15 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
         String timeStr = PlaybackPlayerWidget.formatTime((int) (recordProgress * maxDuration))
                 + '/'
                 + PlaybackPlayerWidget.formatTime(maxDuration);
-        guiGraphics.drawString(
-                font,
-                timeStr,
-                leftX + 247,
-                bottomY - 12,
-                0xFFFFFFFF
-        );
+        guiGraphics.drawString(font, timeStr, leftX + 247, bottomY - 12, 0xFFFFFFFF);
         int timeStrWidth = font.width(timeStr);
 
         doneButton.setPosition(leftX + 247 + timeStrWidth + 5, bottomY - 15);
         cancelButton.setPosition(leftX + 247 + timeStrWidth + 21, bottomY - 15);
+
+        if (targetText != null) {
+            guiGraphics.drawString(font, targetText, leftX + 247 + timeStrWidth + 40, bottomY - 12, 0xFFFFFFFF);
+        }
 
         super.actualRender(guiGraphics, mouseX, mouseY, delta);
         guiGraphics.pose().popPose();

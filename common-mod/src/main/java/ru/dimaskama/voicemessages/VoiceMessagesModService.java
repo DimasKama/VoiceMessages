@@ -22,6 +22,12 @@ public interface VoiceMessagesModService {
 
     boolean hasVoiceMessageSendPermission(ServerPlayer player);
 
+    boolean hasVoiceMessageSendAllPermission(ServerPlayer player);
+
+    boolean hasVoiceMessageSendTeamPermission(ServerPlayer player);
+
+    boolean hasVoiceMessageSendPlayersPermission(ServerPlayer player);
+
     interface VoiceRecordThread {
 
         void startVoiceRecord();

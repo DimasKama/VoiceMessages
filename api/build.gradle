@@ -1,0 +1,62 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+archivesBaseName = archives_base_name
+version = version
+group = maven_group
+
+repositories {
+
+}
+
+dependencies {
+
+}
+
+tasks.register('packageJavadoc', Jar) {
+    dependsOn 'javadoc'
+    from javadoc.destinationDir
+    archiveClassifier = 'javadoc'
+}
+
+tasks.register('packageSources', Jar) {
+    dependsOn 'classes'
+    from sourceSets.main.allSource
+    archiveClassifier = 'sources'
+}
+
+javadoc {
+    title "Voice Messages API v${version}"
+    options.windowTitle = "Voice Messages API"
+}
+
+artifacts {
+    archives packageJavadoc
+    archives packageSources
+}
+
+publishing {
+    publications {
+        voiceChatApi(MavenPublication) {
+            artifactId archives_base_name
+            artifact(jar.archivePath) {
+                builtBy build
+                classifier null
+            }
+            artifact packageJavadoc
+            artifact packageSources
+        }
+    }
+    repositories {
+        maven {
+            name = 'kvotheshaedReleases'
+            url = 'https://maven.kvotheshaed.ru/releases'
+            credentials {
+                username System.getenv('MAVEN_USERNAME')
+                password System.getenv('MAVEN_PASSWORD')
+            }
+        }
+    }
+}

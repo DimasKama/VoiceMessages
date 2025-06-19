@@ -2,12 +2,16 @@ package ru.dimaskama.voicemessages.spigot;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.dimaskama.voicemessages.VoiceMessages;
+import ru.dimaskama.voicemessages.api.VoiceMessagesApiInitCallback;
 import ru.dimaskama.voicemessages.logger.AbstractLogger;
+import ru.dimaskama.voicemessages.spigot.impl.VoiceMessagesApiImpl;
 import ru.dimaskama.voicemessages.spigot.networking.VoiceMessagesSpigotNetworking;
 
 import java.util.logging.Logger;
 
 public final class VoiceMessagesSpigot extends JavaPlugin {
+
+    private static VoiceMessagesSpigot instance;
 
     public VoiceMessagesSpigot() {
         super();
@@ -15,6 +19,7 @@ public final class VoiceMessagesSpigot extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        instance = this;
         Logger logger = getLogger();
         VoiceMessages.init(getDescription().getVersion(), new AbstractLogger() {
             @Override
@@ -50,14 +55,18 @@ public final class VoiceMessagesSpigot extends JavaPlugin {
                 logger.severe(e.getLocalizedMessage());
             }
         });
-        getDescription().getVersion();
         getServer().getPluginManager().registerEvents(new VoiceMessagesSpigotListener(this), this);
-        getServer().getScheduler().runTaskTimer(this, () -> VoiceMessagesSpigotListener.updatePermissions(this), 0L, 5L);
         getServer().getScheduler().runTaskTimer(this, VoiceMessagesSpigotNetworking::tickBuildingVoiceMessages, 5L, 5L);
 
         VoiceMessages.SERVER_CONFIG.loadOrCreate();
 
         VoiceMessagesSpigotNetworking.init(this);
+
+        VoiceMessagesApiInitCallback.EVENT.invoker().setVoiceMessagesApi(new VoiceMessagesApiImpl());
+    }
+
+    public static VoiceMessagesSpigot getInstance() {
+        return instance;
     }
 
     public static String id(String path) {

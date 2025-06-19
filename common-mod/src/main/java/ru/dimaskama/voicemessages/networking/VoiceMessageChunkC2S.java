@@ -19,10 +19,6 @@ public record VoiceMessageChunkC2S(List<byte[]> encodedAudio) implements CustomP
             VoiceMessageChunkC2S::new
     );
 
-    public boolean isFlush() {
-        return VoiceMessagesUtil.isFlush(encodedAudio);
-    }
-
     @Override
     public Type<VoiceMessageChunkC2S> type() {
         return TYPE;

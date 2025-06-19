@@ -8,4 +8,13 @@ depend:
 permissions:
   voicemessages.send:
     default: true
-    description: Allows you to send voice messages
+    description: Send voice messages
+  voicemessages.send.all:
+    default: true
+    description: Send voice messages to all players
+  voicemessages.send.team:
+    default: true
+    description: Send voice messages to the team
+  voicemessages.send.players:
+    default: true
+    description: Send voice messages privately to the players

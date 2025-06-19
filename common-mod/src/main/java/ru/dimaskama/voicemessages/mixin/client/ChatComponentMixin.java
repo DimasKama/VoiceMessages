@@ -72,10 +72,10 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
     )
     private int wrapRenderLine(GuiGraphics instance, Font font, FormattedCharSequence formattedCharSequence, int x, int y, int color, Operation<Integer> original, @Local GuiMessage.Line line) {
         int addX = original.call(instance, font, formattedCharSequence, x, y, color);
-        if (addX > 0) {
-            addX += 4;
-        }
         if (VoiceMessagesMod.isActive()) {
+            if (addX > 0) {
+                addX += 4;
+            }
             Playback playback = GuiMessageTagHack.getPlayback(line);
             if (playback != null) {
                 int lineHeight = getLineHeight();
@@ -101,15 +101,17 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
 
     @Inject(method = "render", at = @At("TAIL"))
     private void renderTail(GuiGraphics guiGraphics, int currentTick, int mouseX, int mouseY, boolean focused, CallbackInfo ci) {
-        if (!voicemessages_visiblePlaybackPlayerWidgets.isEmpty()) {
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0.0F, 0.0F, 150.0);
-            if (VoiceMessagesMod.isActive()) {
-                for (PlaybackPlayerWidget playbackPlayerWidget : voicemessages_visiblePlaybackPlayerWidgets) {
-                    playbackPlayerWidget.render(guiGraphics, mouseX, mouseY, 1.0F);
+        if (VoiceMessagesMod.isActive()) {
+            if (!voicemessages_visiblePlaybackPlayerWidgets.isEmpty()) {
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(0.0F, 0.0F, 150.0);
+                if (VoiceMessagesMod.isActive()) {
+                    for (PlaybackPlayerWidget playbackPlayerWidget : voicemessages_visiblePlaybackPlayerWidgets) {
+                        playbackPlayerWidget.render(guiGraphics, mouseX, mouseY, 1.0F);
+                    }
                 }
+                guiGraphics.pose().popPose();
             }
-            guiGraphics.pose().popPose();
         }
     }
 

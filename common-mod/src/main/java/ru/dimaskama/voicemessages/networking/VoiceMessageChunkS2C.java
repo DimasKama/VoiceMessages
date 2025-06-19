@@ -23,10 +23,6 @@ public record VoiceMessageChunkS2C(UUID sender, List<byte[]> encodedAudio) imple
             VoiceMessageChunkS2C::new
     );
 
-    public boolean isFlush() {
-        return VoiceMessagesUtil.isFlush(encodedAudio);
-    }
-
     @Override
     public Type<VoiceMessageChunkS2C> type() {
         return TYPE;

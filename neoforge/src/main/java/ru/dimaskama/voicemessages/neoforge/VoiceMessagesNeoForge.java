@@ -29,6 +29,24 @@ public final class VoiceMessagesNeoForge {
             PermissionTypes.BOOLEAN,
             (player, uuid, contexts) -> true
     );
+    public static final PermissionNode<Boolean> VOICE_MESSAGE_SEND_ALL_PERMISSION = new PermissionNode<>(
+            VoiceMessages.ID,
+            "send.all",
+            PermissionTypes.BOOLEAN,
+            (player, uuid, contexts) -> true
+    );
+    public static final PermissionNode<Boolean> VOICE_MESSAGE_SEND_TEAM_PERMISSION = new PermissionNode<>(
+            VoiceMessages.ID,
+            "send.team",
+            PermissionTypes.BOOLEAN,
+            (player, uuid, contexts) -> true
+    );
+    public static final PermissionNode<Boolean> VOICE_MESSAGE_SEND_PLAYERS_PERMISSION = new PermissionNode<>(
+            VoiceMessages.ID,
+            "send.players",
+            PermissionTypes.BOOLEAN,
+            (player, uuid, contexts) -> true
+    );
 
     public VoiceMessagesNeoForge() {
         VoiceMessagesMod.init(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion().toString(), new VoiceMessagesModService() {
@@ -60,6 +78,21 @@ public final class VoiceMessagesNeoForge {
             @Override
             public boolean hasVoiceMessageSendPermission(ServerPlayer player) {
                 return PermissionAPI.getPermission(player, VOICE_MESSAGE_SEND_PERMISSION);
+            }
+
+            @Override
+            public boolean hasVoiceMessageSendAllPermission(ServerPlayer player) {
+                return PermissionAPI.getPermission(player, VOICE_MESSAGE_SEND_ALL_PERMISSION);
+            }
+
+            @Override
+            public boolean hasVoiceMessageSendTeamPermission(ServerPlayer player) {
+                return PermissionAPI.getPermission(player, VOICE_MESSAGE_SEND_TEAM_PERMISSION);
+            }
+
+            @Override
+            public boolean hasVoiceMessageSendPlayersPermission(ServerPlayer player) {
+                return PermissionAPI.getPermission(player, VOICE_MESSAGE_SEND_PLAYERS_PERMISSION);
             }
         });
     }

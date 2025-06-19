@@ -39,6 +39,7 @@ tasks {
         minecraftVersion(minecraft_version)
         downloadPlugins {
             modrinth("simple-voice-chat", "bukkit-${voicechat_mod_version}")
+            modrinth("luckperms", "v${luckperms_version}-bukkit")
         }
     }
 }

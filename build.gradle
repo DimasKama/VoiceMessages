@@ -42,3 +42,10 @@ tasks.register('publishEverything') {
         runGradleTasks(['clean'], ['neoforge:modrinth', 'fabric:modrinth', 'spigot:modrinth', 'spigot:publishAllPublicationsToHangar'])
     }
 }
+
+tasks.register('publishApi') {
+    group = 'voicemessages'
+    doLast {
+        runGradleTasks(['api:clean'], ['api:publish'])
+    }
+}

@@ -10,69 +10,85 @@ import ru.dimaskama.voicemessages.VoiceMessagesPlugin;
 import ru.dimaskama.voicemessages.client.GuiMessageTagHack;
 import ru.dimaskama.voicemessages.networking.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class VoiceMessagesClientNetworking {
 
     private static final Map<UUID, VoiceMessageBuilder> VOICE_MESSAGE_BUILDERS = new ConcurrentHashMap<>();
-    private static boolean canSendVoiceMessages;
+    private static List<String> availableTargets = List.of();
     private static int maxVoiceMessageDurationMs = VoiceMessages.MAX_VOICE_MESSAGE_DURATION_MS;
     private static int maxVoiceMessageFrames = VoiceMessages.MAX_VOICE_MESSAGE_FRAMES;
 
-    public static void onVoiceMessagesConfigReceived(VoiceMessagesConfigS2C config) {
+    public static void onConfigReceived(VoiceMessagesConfigS2C config) {
         VoiceMessages.getLogger().info("Received voice messages config");
         maxVoiceMessageDurationMs = config.maxVoiceMessageDurationMs();
         maxVoiceMessageFrames = maxVoiceMessageDurationMs * VoiceMessages.FRAMES_PER_SEC / 1000;
     }
 
-    public static void onVoiceMessagesPermissionsReceived(VoiceMessagesPermissionsS2C permissions) {
-        canSendVoiceMessages = permissions.send();
+    public static void onTargetsReceived(VoiceMessageTargetsS2C targets) {
+        availableTargets = targets.targets();
     }
 
-    public static void onVoiceMessageChunkReceived(VoiceMessageChunkS2C message) {
-        UUID senderUuid = message.sender();
-        if (message.isFlush()) {
-            VoiceMessageBuilder builder = VOICE_MESSAGE_BUILDERS.remove(senderUuid);
-            if (builder != null) {
-                synchronized (builder) {
-                    int duration = builder.getDuration();
-                    List<short[]> audio = builder.getFrames();
-                    Minecraft minecraft = Minecraft.getInstance();
-                    minecraft.execute(() -> {
-                        PlayerInfo sender = minecraft.getConnection().getPlayerInfo(senderUuid);
-                        Component name;
-                        if (sender != null) {
-                            name = sender.getTabListDisplayName();
-                            if (name == null) {
-                                name = Component.literal(sender.getProfile().getName());
-                            }
-                            VoiceMessages.getLogger().info("(Client) Received voice message (" +  duration + "ms) from " + sender.getProfile().getName());
-                        } else {
-                            name = Component.empty();
-                            VoiceMessages.getLogger().info("(Client) Received voice message (" + duration + "ms) from unknown player (" + UndashedUuid.toString(senderUuid) + ")");
-                        }
-                        minecraft.gui.getChat().addMessage(name, null, GuiMessageTagHack.createPlayback(audio));
-                    });
-                    builder.close();
-                }
-            } else {
-                VoiceMessages.getLogger().warn("Received voice message flush packet without previous chunks");
-            }
-        } else {
-            VoiceMessageBuilder builder = VOICE_MESSAGE_BUILDERS.computeIfAbsent(senderUuid, VoiceMessageBuilder::new);
-            synchronized (builder) {
-                try {
-                    builder.appendChunk(message.encodedAudio());
-                } catch (Exception e) {
-                    VoiceMessages.getLogger().warn("Failed to decode voice message chunk", e);
-                }
+    public static void onVoiceMessageChunkReceived(VoiceMessageChunkS2C chunk) {
+        UUID senderUuid = chunk.sender();
+        VoiceMessageBuilder builder = VOICE_MESSAGE_BUILDERS.computeIfAbsent(senderUuid, VoiceMessageBuilder::new);
+        synchronized (builder) {
+            try {
+                builder.appendChunk(chunk.encodedAudio());
+            } catch (Exception e) {
+                VoiceMessages.getLogger().warn("Failed to decode voice message chunk", e);
             }
         }
+    }
 
+    public static void onVoiceMessageEndReceived(VoiceMessageEndS2C end) {
+        UUID senderUuid = end.sender();
+        String target = end.target();
+        VoiceMessageBuilder builder = VOICE_MESSAGE_BUILDERS.remove(senderUuid);
+        if (builder != null) {
+            synchronized (builder) {
+                int duration = builder.getDuration();
+                List<short[]> audio = builder.getFrames();
+                Minecraft minecraft = Minecraft.getInstance();
+                minecraft.execute(() -> {
+                    Component text;
+                    PlayerInfo sender = minecraft.getConnection().getPlayerInfo(senderUuid);
+                    if (sender != null) {
+                        text = sender.getTabListDisplayName();
+                        if (text == null) {
+                            text = Component.literal(sender.getProfile().getName());
+                        }
+                        VoiceMessages.getLogger().info("(Client) Received voice message (" +  duration + "ms) from " + sender.getProfile().getName());
+                    } else {
+                        text = Component.empty();
+                        VoiceMessages.getLogger().info("(Client) Received voice message (" + duration + "ms) from unknown player (" + UndashedUuid.toString(senderUuid) + ")");
+                    }
+                    if (!VoiceMessages.TARGET_ALL.equals(target)) {
+                        Component targetName = null;
+                        if (VoiceMessages.TARGET_TEAM.equals(target)) {
+                            targetName = Component.translatable("voicemessages.target.team");
+                        } else {
+                            PlayerInfo playerInfo = minecraft.getConnection().getPlayerInfo(target);
+                            if (playerInfo != null) {
+                                targetName = playerInfo.getTabListDisplayName();
+                            }
+                            if (targetName == null) {
+                                targetName = Component.literal(target);
+                            }
+                        }
+                        text = Component.empty()
+                                .append(text)
+                                .append(" → ")
+                                .append(targetName);
+                    }
+                    minecraft.gui.getChat().addMessage(text, null, GuiMessageTagHack.createPlayback(audio));
+                });
+                builder.close();
+            }
+        } else {
+            VoiceMessages.getLogger().warn("Received voice message end packet without previous chunks");
+        }
     }
 
     public static void tickBuildingVoiceMessages() {
@@ -89,8 +105,8 @@ public final class VoiceMessagesClientNetworking {
         });
     }
 
-    public static boolean canSendVoiceMessages() {
-        return canSendVoiceMessages;
+    public static List<String> getAvailableTargets() {
+        return availableTargets;
     }
 
     public static int getMaxVoiceMessageDurationMs() {
@@ -102,7 +118,7 @@ public final class VoiceMessagesClientNetworking {
     }
 
     public static void resetConfig() {
-        canSendVoiceMessages = false;
+        availableTargets = List.of();
         maxVoiceMessageDurationMs = VoiceMessages.MAX_VOICE_MESSAGE_DURATION_MS;
         maxVoiceMessageFrames = VoiceMessages.MAX_VOICE_MESSAGE_FRAMES;
     }

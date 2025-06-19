@@ -1,9 +1,16 @@
 {
+  "voicemessages.voice_message": "Voice message",
+  "voicemessages.voice_message_to": "Voice message to %s",
   "voicemessages.recording": "Recording the voice message",
   "voicemessages.confirm": "Confirm sending the voice message",
   "voicemessages.send": "Send the voice message",
+  "voicemessages.to": "To: %s",
+  "voicemessages.target.all": "all",
+  "voicemessages.target.team": "team",
   "voicemessages.kick.permission_violated": "Voice messages permission is violated",
+  "voicemessages.kick.unknown_target": "Unknown voice message target",
   "voicemessages.kick.invalid": "You sent an invalid voice message",
   "voicemessages.kick.spam": "The length of the sent voice message is longer than the time elapsed since the previous one",
-  "voicemessages.microphone_error": "Microphone error: %s"
+  "voicemessages.microphone_error": "Microphone error: %s",
+  "voicemessages.unknown_target": "Unknown target: %s"
 }

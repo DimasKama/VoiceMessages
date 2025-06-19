@@ -7,15 +7,16 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import ru.dimaskama.voicemessages.VoiceMessages;
-import ru.dimaskama.voicemessages.VoiceMessagesMod;
-import ru.dimaskama.voicemessages.VoiceMessagesPlugin;
+import org.jetbrains.annotations.Nullable;
+import ru.dimaskama.voicemessages.*;
 import ru.dimaskama.voicemessages.client.Playback;
 import ru.dimaskama.voicemessages.client.PlaybackManager;
 import ru.dimaskama.voicemessages.client.screen.widget.PlaybackPlayerWidget;
 import ru.dimaskama.voicemessages.networking.VoiceMessageChunkC2S;
+import ru.dimaskama.voicemessages.networking.VoiceMessageEndC2S;
 
 import java.util.List;
 
@@ -28,13 +29,20 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
     private final int leftX;
     private final int fromBottomY;
     private final Playback playback;
+    private final String target;
+    @Nullable
+    private final Component targetText;
+    private int targetTextX;
+    private int targetTextY;
     private PlaybackPlayerWidget playbackPlayerWidget;
 
-    public VoiceMessageConfirmScreen(Screen parent, int leftX, int fromBottomY, List<short[]> audio) {
+    public VoiceMessageConfirmScreen(Screen parent, int leftX, int fromBottomY, List<short[]> audio, String target) {
         super(Component.translatable("voicemessages.confirm"), parent);
         this.leftX = leftX;
         this.fromBottomY = fromBottomY;
         playback = new Playback(audio);
+        this.target = target;
+        targetText = getScreenTargetText(target);
     }
 
     @Override
@@ -67,15 +75,19 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
                 button -> onClose()
         ));
         cancelButton.setTooltip(Tooltip.create(CommonComponents.GUI_CANCEL));
+        targetTextX = leftX + 300;
+        targetTextY = bottomY - 12;
     }
 
     private void send() {
         List<short[]> audio = playback.getAudio();
         OpusEncoder encoder = VoiceMessagesPlugin.getClientOpusEncoder();
         encoder.resetState();
+        VoiceMessagesModService service = VoiceMessagesMod.getService();
         for (VoiceMessageChunkC2S chunk : VoiceMessageChunkC2S.split(VoiceMessagesPlugin.encodeList(encoder, audio))) {
-            VoiceMessagesMod.getService().sendToServer(chunk);
+            service.sendToServer(chunk);
         }
+        service.sendToServer(new VoiceMessageEndC2S(target));
         VoiceMessages.getLogger().info("Sent voice message (" + (1000 * audio.size() / VoiceMessages.FRAMES_PER_SEC) + "ms)");
     }
 
@@ -94,6 +106,9 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0.0F, 0.0F, 150.0F);
         super.actualRender(guiGraphics, mouseX, mouseY, delta);
+        if (targetText != null) {
+            guiGraphics.drawString(font, targetText, targetTextX, targetTextY, 0xFFFFFFFF);
+        }
         guiGraphics.pose().popPose();
     }
 
@@ -114,6 +129,18 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
     public void removed() {
         super.removed();
         PlaybackManager.MAIN.stopPlaying();
+    }
+
+    public static Component getTargetText(String target) {
+        String key = "voicemessages.target." + target;
+        return Component.literal(I18n.exists(key) ? I18n.get(key) : target);
+    }
+
+    @Nullable
+    public static Component getScreenTargetText(String target) {
+        return VoiceMessages.TARGET_ALL.equals(target)
+                ? null
+                : Component.translatable("voicemessages.to", VoiceMessageConfirmScreen.getTargetText(target));
     }
 
 }

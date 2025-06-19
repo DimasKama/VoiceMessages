@@ -3,6 +3,7 @@ package ru.dimaskama.voicemessages.neoforge.client;
 import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.client.ClientVoicechat;
 import de.maxhenkel.voicechat.voice.client.MicThread;
+import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesModService;
 
 import java.io.IOException;
@@ -58,9 +59,9 @@ public class NeoForgeVoiceRecordThread extends Thread implements VoiceMessagesMo
     public void stopVoiceRecord() {
         try {
             running = false;
-            join();
+            join(1000L);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            VoiceMessages.getLogger().error("Failed to join voice record thread", e);
         }
     }
 

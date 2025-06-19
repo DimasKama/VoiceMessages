@@ -37,14 +37,19 @@ public final class VoiceMessagesNeoForgeEvents {
     private static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (VoiceMessagesMod.isActive()) {
             if (event.getEntity() instanceof ServerPlayer player) {
-                VoiceMessagesServerNetworking.onPlayerDisconnected(player.getUUID());
+                VoiceMessagesServerNetworking.onPlayerDisconnected(player.getServer(), player.getUUID());
             }
         }
     }
 
     @SubscribeEvent
     private static void onPermissionGatherNodes(PermissionGatherEvent.Nodes event) {
-        event.addNodes(VoiceMessagesNeoForge.VOICE_MESSAGE_SEND_PERMISSION);
+        if (VoiceMessagesMod.isActive()) {
+            event.addNodes(VoiceMessagesNeoForge.VOICE_MESSAGE_SEND_PERMISSION);
+            event.addNodes(VoiceMessagesNeoForge.VOICE_MESSAGE_SEND_ALL_PERMISSION);
+            event.addNodes(VoiceMessagesNeoForge.VOICE_MESSAGE_SEND_TEAM_PERMISSION);
+            event.addNodes(VoiceMessagesNeoForge.VOICE_MESSAGE_SEND_PLAYERS_PERMISSION);
+        }
     }
 
     @EventBusSubscriber(modid = VoiceMessages.ID, bus = EventBusSubscriber.Bus.MOD)
@@ -66,13 +71,13 @@ public final class VoiceMessagesNeoForgeEvents {
                         VoiceMessagesConfigS2C.TYPE,
                         VoiceMessagesConfigS2C.STREAM_CODEC,
                         (payload, context) ->
-                                VoiceMessagesClientNetworking.onVoiceMessagesConfigReceived(payload)
+                                VoiceMessagesClientNetworking.onConfigReceived(payload)
                 );
                 registrar.playToClient(
-                        VoiceMessagesPermissionsS2C.TYPE,
-                        VoiceMessagesPermissionsS2C.STREAM_CODEC,
+                        VoiceMessageTargetsS2C.TYPE,
+                        VoiceMessageTargetsS2C.STREAM_CODEC,
                         (payload, context) ->
-                                VoiceMessagesClientNetworking.onVoiceMessagesPermissionsReceived(payload)
+                                VoiceMessagesClientNetworking.onTargetsReceived(payload)
                 );
                 registrar.playToServer(
                         VoiceMessageChunkC2S.TYPE,
@@ -85,6 +90,18 @@ public final class VoiceMessagesNeoForgeEvents {
                         VoiceMessageChunkS2C.STREAM_CODEC,
                         (payload, context) ->
                                 VoiceMessagesClientNetworking.onVoiceMessageChunkReceived(payload)
+                );
+                registrar.playToServer(
+                        VoiceMessageEndC2S.TYPE,
+                        VoiceMessageEndC2S.STREAM_CODEC,
+                        (payload, context) ->
+                                VoiceMessagesServerNetworking.onVoiceMessageEndReceived((ServerPlayer) context.player(), payload)
+                );
+                registrar.playToClient(
+                        VoiceMessageEndS2C.TYPE,
+                        VoiceMessageEndS2C.STREAM_CODEC,
+                        (payload, context) ->
+                                VoiceMessagesClientNetworking.onVoiceMessageEndReceived(payload)
                 );
             }
         }

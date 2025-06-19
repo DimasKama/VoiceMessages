@@ -27,7 +27,6 @@ public class VoiceMessagesUtil {
         if (start < totalFrames) {
             chunks.add(factory.apply(audio.subList(start, totalFrames)));
         }
-        chunks.add(factory.apply(List.of()));
         return chunks;
     }
 

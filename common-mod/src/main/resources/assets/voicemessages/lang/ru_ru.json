@@ -1,9 +1,16 @@
 {
+  "voicemessages.voice_message": "Голосовое сообщение",
+  "voicemessages.voice_message_to": "Голосовое сообщение %s",
   "voicemessages.recording": "Запись голосового сообщения",
   "voicemessages.confirm": "Подтверждения отправки голосового сообщения",
   "voicemessages.send": "Отправить голосовое сообщение",
+  "voicemessages.to": "Кому: %s",
+  "voicemessages.target.all": "всем",
+  "voicemessages.target.team": "командe",
   "voicemessages.kick.permission_violated": "Наружено разрешение на отправку голосовых сообщений",
+  "voicemessages.kick.unknown_target": "Неизвестный адресат голосового сообщения",
   "voicemessages.kick.invalid": "Вы отправили невалидное голосовое сообщение",
   "voicemessages.kick.spam": "Длительность отправленного голосового сообщения больше времени, прошедшего с отправки предыдущего",
-  "voicemessages.microphone_error": "Ошибка микрофона: %s"
+  "voicemessages.microphone_error": "Ошибка микрофона: %s",
+  "voicemessages.unknown_target": "Неизвестный адресат: %s"
 }

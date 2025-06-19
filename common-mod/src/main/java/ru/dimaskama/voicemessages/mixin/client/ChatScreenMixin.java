@@ -2,9 +2,11 @@ package ru.dimaskama.voicemessages.mixin.client;
 
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -13,11 +15,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.client.networking.VoiceMessagesClientNetworking;
 import ru.dimaskama.voicemessages.client.screen.RecordVoiceMessageScreen;
+import ru.dimaskama.voicemessages.client.screen.VoiceMessageConfirmScreen;
 import ru.dimaskama.voicemessages.client.screen.widget.PlaybackPlayerWidget;
 import ru.dimaskama.voicemessages.duck.client.ChatComponentDuck;
+
+import java.util.List;
 
 @Mixin(ChatScreen.class)
 abstract class ChatScreenMixin extends Screen {
@@ -43,7 +49,18 @@ abstract class ChatScreenMixin extends Screen {
     @Inject(method = "init", at = @At("TAIL"))
     private void initTail(CallbackInfo ci) {
         if (VoiceMessagesMod.isActive()) {
-            voicemessages_canSendVoiceMessages = VoiceMessagesClientNetworking.canSendVoiceMessages();
+            List<String> availableTargets = VoiceMessagesClientNetworking.getAvailableTargets();
+            String target;
+            voicemessages_canSendVoiceMessages = false;
+            if (!availableTargets.isEmpty()) {
+                target = availableTargets.getFirst();
+                // If the first target is not the player
+                if (minecraft.getConnection().getPlayerInfo(target) == null) {
+                    voicemessages_canSendVoiceMessages = true;
+                }
+            } else {
+                target = null;
+            }
             if (voicemessages_canSendVoiceMessages) {
                 int x = input.getX();
                 int y = input.getY();
@@ -53,9 +70,17 @@ abstract class ChatScreenMixin extends Screen {
                         14,
                         14,
                         voicemessages_WIDGET_SPRITES,
-                        button -> minecraft.setScreen(new RecordVoiceMessageScreen(this, button.getX(), height - button.getY() + 1))
+                        button -> minecraft.setScreen(new RecordVoiceMessageScreen(this, button.getX(), height - button.getY() + 1, target))
                 ));
-                voicemessages_button.active = minecraft.screen == this;
+                if (minecraft.screen == this) {
+                    voicemessages_button.setTooltip(Tooltip.create(
+                            VoiceMessages.TARGET_ALL.equals(target)
+                                    ? Component.translatable("voicemessages.voice_message")
+                                    : Component.translatable("voicemessages.voice_message_to", VoiceMessageConfirmScreen.getTargetText(target))
+                    ));
+                } else {
+                    voicemessages_button.active = false;
+                }
                 input.setWidth(input.getWidth() - 14);
                 input.setX(x + 14);
             }

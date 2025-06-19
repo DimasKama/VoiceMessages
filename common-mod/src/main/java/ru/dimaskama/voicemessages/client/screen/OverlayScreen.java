@@ -8,6 +8,7 @@ import ru.dimaskama.voicemessages.mixin.client.ScreenAccessor;
 public abstract class OverlayScreen extends Screen {
 
     public final Screen parent;
+    private boolean firstInit = true;
 
     protected OverlayScreen(Component title, Screen parent) {
         super(title);
@@ -16,7 +17,12 @@ public abstract class OverlayScreen extends Screen {
 
     @Override
     protected void init() {
-        ((ScreenAccessor) parent).voicemessages_init();
+        if (firstInit) {
+            parent.init(minecraft, width, height);
+            firstInit = false;
+        } else {
+            ((ScreenAccessor) parent).voicemessages_init();
+        }
         super.init();
     }
 
