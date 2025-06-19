@@ -15,7 +15,7 @@ import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.client.VoiceMessagesClientEvents;
 import ru.dimaskama.voicemessages.client.VoicemsgCommand;
 
-@EventBusSubscriber(modid = VoiceMessages.ID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = VoiceMessages.ID, value = Dist.CLIENT)
 public final class VoiceMessagesNeoForgeClientEvents {
 
     @SubscribeEvent

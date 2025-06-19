@@ -164,8 +164,6 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
 
     @Override
     protected void actualRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0.0F, 0.0F, 150.0F);
         int bottomY = height - fromBottomY;
         guiGraphics.fill(leftX - 1, bottomY - 16, leftX + 243, bottomY + 1, 0xFFFFFFFF);
         guiGraphics.fill(leftX, bottomY - 15, leftX + 242, bottomY, 0xFFFF5555);
@@ -196,7 +194,6 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
         }
 
         super.actualRender(guiGraphics, mouseX, mouseY, delta);
-        guiGraphics.pose().popPose();
     }
 
 }

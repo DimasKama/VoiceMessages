@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
@@ -51,9 +51,8 @@ public class PlaybackPlayerWidget extends AbstractWidget {
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         int x = getX();
         int y = getY();
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(x - scale * x, y - scale * y, 0.0F);
-        guiGraphics.pose().scale(scale, scale, 1.0F);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(scale, scale);
         int width = getWidth();
         int height = getHeight();
         int addX = 0;
@@ -87,7 +86,7 @@ public class PlaybackPlayerWidget extends AbstractWidget {
                     0xFFFFFFFF
             );
         }
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 
     @Override
@@ -134,7 +133,7 @@ public class PlaybackPlayerWidget extends AbstractWidget {
 
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
             ResourceLocation id = (playback.isPlaying() ? PAUSE_BUTTON_SPRITES : PLAY_BUTTON_SPRITES).get(isActive(), isFocused());
-            guiGraphics.blitSprite(RenderType::guiTextured, id, getX(), getY(), width, height);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, id, getX(), getY(), width, height);
         }
 
         @Override

@@ -12,8 +12,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.util.FormattedCharSequence;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.Matrix3x2f;
+import org.joml.Vector2f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -63,54 +63,48 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
     }
 
     @WrapOperation(
-            method = "render",
+            method = "/method_71991|lambda\\$render\\$1/",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/util/FormattedCharSequence;III)I",
-                    ordinal = 0
+                    target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/util/FormattedCharSequence;III)V"
             )
     )
-    private int wrapRenderLine(GuiGraphics instance, Font font, FormattedCharSequence formattedCharSequence, int x, int y, int color, Operation<Integer> original, @Local GuiMessage.Line line) {
-        int addX = original.call(instance, font, formattedCharSequence, x, y, color);
+    private void wrapRenderLine(GuiGraphics instance, Font font, FormattedCharSequence formattedCharSequence, int x, int y, int color, Operation<Void> original, @Local(argsOnly = true) GuiMessage.Line line) {
+        original.call(instance, font, formattedCharSequence, x, y, color);
         if (VoiceMessagesMod.isActive()) {
-            if (addX > 0) {
-                addX += 4;
-            }
             Playback playback = GuiMessageTagHack.getPlayback(line);
             if (playback != null) {
+                int addX = font.width(formattedCharSequence);
+                if (addX > 0) {
+                    addX += 4;
+                }
                 int lineHeight = getLineHeight();
                 PlaybackPlayerWidget playbackPlayerWidget = new PlaybackPlayerWidget(PlaybackManager.MAIN, playback, 0);
-                Matrix4f matrix4f = instance.pose().last().pose();
-                Vector3f vector3f = new Vector3f();
-                vector3f.set(x + addX, y - ((lineHeight - 9) >> 1), 0.0F);
-                matrix4f.transformPosition(vector3f);
+                Matrix3x2f matrix3x2f = instance.pose();
+                Vector2f vector2f = new Vector2f();
+                vector2f.set(x + addX, y - ((lineHeight - 9) >> 1));
+                matrix3x2f.transformPosition(vector2f);
                 int playbackWidth = getWidth() - addX - x;
                 playbackPlayerWidget.setRectangle(
                         playbackWidth,
                         lineHeight,
-                        (int) vector3f.x,
-                        (int) vector3f.y
+                        (int) vector2f.x,
+                        (int) vector2f.y
                 );
                 addX += playbackWidth;
                 playbackPlayerWidget.setScale((float) getScale());
                 voicemessages_visiblePlaybackPlayerWidgets.add(playbackPlayerWidget);
             }
         }
-        return addX;
     }
 
     @Inject(method = "render", at = @At("TAIL"))
     private void renderTail(GuiGraphics guiGraphics, int currentTick, int mouseX, int mouseY, boolean focused, CallbackInfo ci) {
         if (VoiceMessagesMod.isActive()) {
             if (!voicemessages_visiblePlaybackPlayerWidgets.isEmpty()) {
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(0.0F, 0.0F, 150.0);
-                if (VoiceMessagesMod.isActive()) {
-                    for (PlaybackPlayerWidget playbackPlayerWidget : voicemessages_visiblePlaybackPlayerWidgets) {
-                        playbackPlayerWidget.render(guiGraphics, mouseX, mouseY, 1.0F);
-                    }
+                for (PlaybackPlayerWidget playbackPlayerWidget : voicemessages_visiblePlaybackPlayerWidgets) {
+                    playbackPlayerWidget.render(guiGraphics, mouseX, mouseY, 1.0F);
                 }
-                guiGraphics.pose().popPose();
             }
         }
     }

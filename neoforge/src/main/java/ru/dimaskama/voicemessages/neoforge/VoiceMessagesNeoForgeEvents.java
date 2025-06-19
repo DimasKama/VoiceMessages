@@ -16,7 +16,7 @@ import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.client.networking.VoiceMessagesClientNetworking;
 import ru.dimaskama.voicemessages.networking.*;
 
-@EventBusSubscriber(modid = VoiceMessages.ID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = VoiceMessages.ID)
 public final class VoiceMessagesNeoForgeEvents {
 
     @SubscribeEvent
@@ -52,60 +52,55 @@ public final class VoiceMessagesNeoForgeEvents {
         }
     }
 
-    @EventBusSubscriber(modid = VoiceMessages.ID, bus = EventBusSubscriber.Bus.MOD)
-    public static final class ModBus {
-
-        @SubscribeEvent
-        private static void onPayloadRegister(RegisterPayloadHandlersEvent event) {
-            if (VoiceMessagesMod.isActive()) {
-                PayloadRegistrar registrar = event.registrar("1")
-                        .executesOn(HandlerThread.NETWORK)
-                        .optional();
-                registrar.playToServer(
-                        VoiceMessagesVersionC2S.TYPE,
-                        VoiceMessagesVersionC2S.STREAM_CODEC,
-                        (payload, context) ->
-                                VoiceMessagesServerNetworking.onVoiceMessagesVersionReceived((ServerPlayer) context.player(), payload)
-                );
-                registrar.playToClient(
-                        VoiceMessagesConfigS2C.TYPE,
-                        VoiceMessagesConfigS2C.STREAM_CODEC,
-                        (payload, context) ->
-                                VoiceMessagesClientNetworking.onConfigReceived(payload)
-                );
-                registrar.playToClient(
-                        VoiceMessageTargetsS2C.TYPE,
-                        VoiceMessageTargetsS2C.STREAM_CODEC,
-                        (payload, context) ->
-                                VoiceMessagesClientNetworking.onTargetsReceived(payload)
-                );
-                registrar.playToServer(
-                        VoiceMessageChunkC2S.TYPE,
-                        VoiceMessageChunkC2S.STREAM_CODEC,
-                        (payload, context) ->
-                                VoiceMessagesServerNetworking.onVoiceMessageChunkReceived((ServerPlayer) context.player(), payload)
-                );
-                registrar.playToClient(
-                        VoiceMessageChunkS2C.TYPE,
-                        VoiceMessageChunkS2C.STREAM_CODEC,
-                        (payload, context) ->
-                                VoiceMessagesClientNetworking.onVoiceMessageChunkReceived(payload)
-                );
-                registrar.playToServer(
-                        VoiceMessageEndC2S.TYPE,
-                        VoiceMessageEndC2S.STREAM_CODEC,
-                        (payload, context) ->
-                                VoiceMessagesServerNetworking.onVoiceMessageEndReceived((ServerPlayer) context.player(), payload)
-                );
-                registrar.playToClient(
-                        VoiceMessageEndS2C.TYPE,
-                        VoiceMessageEndS2C.STREAM_CODEC,
-                        (payload, context) ->
-                                VoiceMessagesClientNetworking.onVoiceMessageEndReceived(payload)
-                );
-            }
+    @SubscribeEvent
+    private static void onPayloadRegister(RegisterPayloadHandlersEvent event) {
+        if (VoiceMessagesMod.isActive()) {
+            PayloadRegistrar registrar = event.registrar("1")
+                    .executesOn(HandlerThread.NETWORK)
+                    .optional();
+            registrar.playToServer(
+                    VoiceMessagesVersionC2S.TYPE,
+                    VoiceMessagesVersionC2S.STREAM_CODEC,
+                    (payload, context) ->
+                            VoiceMessagesServerNetworking.onVoiceMessagesVersionReceived((ServerPlayer) context.player(), payload)
+            );
+            registrar.playToClient(
+                    VoiceMessagesConfigS2C.TYPE,
+                    VoiceMessagesConfigS2C.STREAM_CODEC,
+                    (payload, context) ->
+                            VoiceMessagesClientNetworking.onConfigReceived(payload)
+            );
+            registrar.playToClient(
+                    VoiceMessageTargetsS2C.TYPE,
+                    VoiceMessageTargetsS2C.STREAM_CODEC,
+                    (payload, context) ->
+                            VoiceMessagesClientNetworking.onTargetsReceived(payload)
+            );
+            registrar.playToServer(
+                    VoiceMessageChunkC2S.TYPE,
+                    VoiceMessageChunkC2S.STREAM_CODEC,
+                    (payload, context) ->
+                            VoiceMessagesServerNetworking.onVoiceMessageChunkReceived((ServerPlayer) context.player(), payload)
+            );
+            registrar.playToClient(
+                    VoiceMessageChunkS2C.TYPE,
+                    VoiceMessageChunkS2C.STREAM_CODEC,
+                    (payload, context) ->
+                            VoiceMessagesClientNetworking.onVoiceMessageChunkReceived(payload)
+            );
+            registrar.playToServer(
+                    VoiceMessageEndC2S.TYPE,
+                    VoiceMessageEndC2S.STREAM_CODEC,
+                    (payload, context) ->
+                            VoiceMessagesServerNetworking.onVoiceMessageEndReceived((ServerPlayer) context.player(), payload)
+            );
+            registrar.playToClient(
+                    VoiceMessageEndS2C.TYPE,
+                    VoiceMessageEndS2C.STREAM_CODEC,
+                    (payload, context) ->
+                            VoiceMessagesClientNetworking.onVoiceMessageEndReceived(payload)
+            );
         }
-
     }
 
 }

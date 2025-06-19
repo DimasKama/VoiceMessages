@@ -30,7 +30,7 @@ public final class VoiceMessagesServerNetworking {
                 VoiceMessagesModService service = VoiceMessagesMod.getService();
                 ServerConfig config = VoiceMessages.SERVER_CONFIG.getData();
                 service.sendToPlayer(sender, new VoiceMessagesConfigS2C(config.maxVoiceMessageDurationMs()));
-                updateTargets(sender.server);
+                updateTargets(sender.getServer());
             } else {
                 VoiceMessages.getLogger().warn(sender.getGameProfile().getName() + " sent his voicemessages modVersion multiple times");
             }
@@ -131,12 +131,12 @@ public final class VoiceMessagesServerNetworking {
 
     private static Iterable<ServerPlayer> collectPlayers(ServerPlayer sender, String target) {
         if (VoiceMessages.TARGET_ALL.equals(target)) {
-            return List.copyOf(sender.server.getPlayerList().getPlayers());
+            return List.copyOf(sender.getServer().getPlayerList().getPlayers());
         }
         if (VoiceMessages.TARGET_TEAM.equals(target)) {
             PlayerTeam team = sender.getTeam();
             if (team != null) {
-                PlayerList playerList = sender.server.getPlayerList();
+                PlayerList playerList = sender.getServer().getPlayerList();
                 List<ServerPlayer> players = new ArrayList<>();
                 for (String playerUuidStr : team.getPlayers()) {
                     ServerPlayer player = playerList.getPlayer(UUID.fromString(playerUuidStr));
@@ -148,7 +148,7 @@ public final class VoiceMessagesServerNetworking {
             }
             return List.of(sender);
         }
-        ServerPlayer otherPlayer = sender.server.getPlayerList().getPlayerByName(target);
+        ServerPlayer otherPlayer = sender.getServer().getPlayerList().getPlayerByName(target);
         if (otherPlayer != null && !sender.equals(otherPlayer)) {
             return List.of(sender, otherPlayer);
         }
@@ -212,7 +212,7 @@ public final class VoiceMessagesServerNetworking {
                 targets.add(VoiceMessages.TARGET_TEAM);
             }
             if (service.hasVoiceMessageSendPlayersPermission(player)) {
-                PlayerList playerList = player.server.getPlayerList();
+                PlayerList playerList = player.getServer().getPlayerList();
                 for (UUID playerUuid : HAS_COMPATIBLE_VERSION) {
                     ServerPlayer p = playerList.getPlayer(playerUuid);
                     if (p != null) {

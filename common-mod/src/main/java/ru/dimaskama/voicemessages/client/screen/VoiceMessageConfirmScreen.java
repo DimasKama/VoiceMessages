@@ -103,13 +103,10 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
 
     @Override
     protected void actualRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0.0F, 0.0F, 150.0F);
         super.actualRender(guiGraphics, mouseX, mouseY, delta);
         if (targetText != null) {
             guiGraphics.drawString(font, targetText, targetTextX, targetTextY, 0xFFFFFFFF);
         }
-        guiGraphics.pose().popPose();
     }
 
     @Override
