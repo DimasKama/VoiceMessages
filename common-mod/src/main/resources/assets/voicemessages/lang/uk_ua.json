@@ -3,7 +3,7 @@
   "voicemessages.voice_message_to": "Голосове повідомлення %s",
   "voicemessages.recording": "Запис голосового повідомлення",
   "voicemessages.confirm": "Підтвердити надсилання голосового повідомлення",
-  "voicemessages.send": "Надіслати голосове повідомлення",
+  "voicemessages.send": "Надіслати",
   "voicemessages.to": "Для: %s",
   "voicemessages.target.all": "усіх",
   "voicemessages.target.team": "команди",
