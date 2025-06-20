@@ -1,1 +1,2 @@
-- Update for Minecraft 1.21.6
+### Fabric & NeoForge
+- Added Ukrainian localization by StarmanMine142
