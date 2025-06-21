@@ -105,10 +105,8 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
             if (!voicemessages_visiblePlaybackPlayerWidgets.isEmpty()) {
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(0.0F, 0.0F, 150.0);
-                if (VoiceMessagesMod.isActive()) {
-                    for (PlaybackPlayerWidget playbackPlayerWidget : voicemessages_visiblePlaybackPlayerWidgets) {
-                        playbackPlayerWidget.render(guiGraphics, mouseX, mouseY, 1.0F);
-                    }
+                for (PlaybackPlayerWidget playbackPlayerWidget : voicemessages_visiblePlaybackPlayerWidgets) {
+                    playbackPlayerWidget.render(guiGraphics, mouseX, mouseY, 1.0F);
                 }
                 guiGraphics.pose().popPose();
             }
