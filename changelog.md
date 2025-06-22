@@ -1,2 +1,1 @@
-### Fabric & NeoForge
-- Added Ukrainian localization by StarmanMine142
+- Fix possible ConcurrentModificationException
