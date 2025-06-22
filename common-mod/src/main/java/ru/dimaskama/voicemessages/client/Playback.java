@@ -24,6 +24,7 @@ public class Playback {
     private final FloatList audioLevels;
     private final AtomicInteger framePosition = new AtomicInteger();
     private volatile ScheduledFuture<?> playFuture;
+    private volatile Runnable onFinish;
 
     public Playback(List<short[]> audio) {
         this(audio, calculateAudioLevels(audio));
@@ -92,9 +93,17 @@ public class Playback {
         }
     }
 
+    public void setOnFinish(Runnable onFinish) {
+        this.onFinish = onFinish;
+    }
+
     private void playNextFrame() {
         int pos = framePosition.getAndIncrement();
         if (pos < 0 || pos >= audio.size()) {
+            Runnable onFinish = this.onFinish;
+            if (onFinish != null) {
+                onFinish.run();
+            }
             throw new RuntimeException("playback finished");
         }
         channel.play(audio.get(pos));

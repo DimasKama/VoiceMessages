@@ -126,6 +126,7 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
     public void removed() {
         super.removed();
         PlaybackManager.MAIN.stopPlaying();
+        PlaybackManager.MAIN.remove(playback);
     }
 
     public static Component getTargetText(String target) {
