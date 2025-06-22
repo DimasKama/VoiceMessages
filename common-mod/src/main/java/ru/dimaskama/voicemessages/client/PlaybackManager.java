@@ -1,5 +1,7 @@
 package ru.dimaskama.voicemessages.client;
 
+import net.minecraft.client.Minecraft;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,7 @@ public class PlaybackManager {
 
     public static final PlaybackManager MAIN = new PlaybackManager();
     private final Map<UUID, Playback> playbacks = new HashMap<>();
+    private Playback lastInChat;
     private Playback playingNow;
 
     private PlaybackManager() {}
@@ -24,10 +27,21 @@ public class PlaybackManager {
         return playbacks.get(uuid);
     }
 
-    public UUID add(List<short[]> audio) {
+    public UUID addFromChat(List<short[]> audio) {
         Playback playback = new Playback(audio);
-        add(playback);
+        addFromChat(playback);
         return playback.getChannel().getId();
+    }
+
+    public void addFromChat(Playback playback) {
+        if (lastInChat != null) {
+            lastInChat.setOnFinish(() -> Minecraft.getInstance().execute(() -> {
+                playback.setProgress(0.0F);
+                play(playback);
+            }));
+        }
+        lastInChat = playback;
+        add(playback);
     }
 
     public void add(Playback playback) {

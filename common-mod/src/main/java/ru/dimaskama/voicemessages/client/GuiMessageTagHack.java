@@ -28,8 +28,8 @@ public final class GuiMessageTagHack {
         return null;
     }
 
-    public static GuiMessageTag createPlayback(List<short[]> audio) {
-        UUID uuid = PlaybackManager.MAIN.add(audio);
+    public static GuiMessageTag createAndAdd(List<short[]> audio) {
+        UUID uuid = PlaybackManager.MAIN.addFromChat(audio);
         String text = "VoiceMessage#" + UndashedUuid.toString(uuid);
         return new GuiMessageTag(0xFF5555FF, null, null, text);
     }
