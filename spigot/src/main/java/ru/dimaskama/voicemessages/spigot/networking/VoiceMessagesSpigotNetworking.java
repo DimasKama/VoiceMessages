@@ -2,6 +2,7 @@ package ru.dimaskama.voicemessages.spigot.networking;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -30,7 +31,7 @@ public final class VoiceMessagesSpigotNetworking {
     public static final String VOICE_MESSAGE_CHUNK_C2S_CHANNEL = VoiceMessagesSpigot.id("voice_message_chunk_c2s");
     public static final String VOICE_MESSAGE_END_C2S_CHANNEL = VoiceMessagesSpigot.id("voice_message_end_c2s");
     private static final Set<UUID> HAS_COMPATIBLE_VERSION = Sets.newConcurrentHashSet();
-    private static final ListMultimap<UUID, String> AVAILABLE_TARGETS = ArrayListMultimap.create();
+    private static final ListMultimap<UUID, String> AVAILABLE_TARGETS = Multimaps.synchronizedListMultimap(ArrayListMultimap.create());
     private static final Map<UUID, Long> VOICE_MESSAGES_TIMES = new ConcurrentHashMap<>();
     private static final Map<UUID, VoiceMessageBuilder> VOICE_MESSAGE_BUILDERS = new ConcurrentHashMap<>();
 
@@ -59,30 +60,32 @@ public final class VoiceMessagesSpigotNetworking {
 
     public static void updateTargets(Player player) {
         List<String> targets = AVAILABLE_TARGETS.get(player.getUniqueId());
-        targets.clear();
-        if (player.hasPermission(VoiceMessages.VOICE_MESSAGE_SEND_PERMISSION)) {
-            if (player.hasPermission(VoiceMessages.VOICE_MESSAGE_SEND_ALL_PERMISSION)) {
-                targets.add(VoiceMessages.TARGET_ALL);
-            }
-            if (player.hasPermission(VoiceMessages.VOICE_MESSAGE_SEND_TEAM_PERMISSION)) {
-                targets.add(VoiceMessages.TARGET_TEAM);
-            }
-            if (player.hasPermission(VoiceMessages.VOICE_MESSAGE_SEND_PLAYERS_PERMISSION)) {
-                Server server = player.getServer();
-                for (UUID playerUuid : HAS_COMPATIBLE_VERSION) {
-                    Player p = server.getPlayer(playerUuid);
-                    if (p != null) {
-                        targets.add(p.getName());
+        synchronized (targets) {
+            targets.clear();
+            if (player.hasPermission(VoiceMessages.VOICE_MESSAGE_SEND_PERMISSION)) {
+                if (player.hasPermission(VoiceMessages.VOICE_MESSAGE_SEND_ALL_PERMISSION)) {
+                    targets.add(VoiceMessages.TARGET_ALL);
+                }
+                if (player.hasPermission(VoiceMessages.VOICE_MESSAGE_SEND_TEAM_PERMISSION)) {
+                    targets.add(VoiceMessages.TARGET_TEAM);
+                }
+                if (player.hasPermission(VoiceMessages.VOICE_MESSAGE_SEND_PLAYERS_PERMISSION)) {
+                    Server server = player.getServer();
+                    for (UUID playerUuid : HAS_COMPATIBLE_VERSION) {
+                        Player p = server.getPlayer(playerUuid);
+                        if (p != null) {
+                            targets.add(p.getName());
+                        }
                     }
                 }
+                ModifyAvailableTargetsCallback.EVENT.invoker().modifyAvailableTargets(player, targets);
             }
-            ModifyAvailableTargetsCallback.EVENT.invoker().modifyAvailableTargets(player, targets);
+            player.sendPluginMessage(
+                    VoiceMessagesSpigot.getInstance(),
+                    VoiceMessageTargetsS2C.CHANNEL,
+                    new VoiceMessageTargetsS2C(List.copyOf(targets)).encode()
+            );
         }
-        player.sendPluginMessage(
-                VoiceMessagesSpigot.getInstance(),
-                VoiceMessageTargetsS2C.CHANNEL,
-                new VoiceMessageTargetsS2C(List.copyOf(targets)).encode()
-        );
     }
 
     private static void onVoiceMessagesVersionReceived(Player player, byte[] message) {
