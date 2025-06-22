@@ -2,6 +2,7 @@ package ru.dimaskama.voicemessages.networking;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -20,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class VoiceMessagesServerNetworking {
 
     private static final Set<UUID> HAS_COMPATIBLE_VERSION = Sets.newConcurrentHashSet();
-    private static final ListMultimap<UUID, String> AVAILABLE_TARGETS = ArrayListMultimap.create();
+    private static final ListMultimap<UUID, String> AVAILABLE_TARGETS = Multimaps.synchronizedListMultimap(ArrayListMultimap.create());
     private static final Map<UUID, Long> VOICE_MESSAGES_TIMES = new ConcurrentHashMap<>();
     private static final Map<UUID, VoiceMessageBuilder> VOICE_MESSAGE_BUILDERS = new ConcurrentHashMap<>();
 
@@ -203,26 +204,28 @@ public final class VoiceMessagesServerNetworking {
     public static void updateTargets(ServerPlayer player) {
         VoiceMessagesModService service = VoiceMessagesMod.getService();
         List<String> targets = AVAILABLE_TARGETS.get(player.getUUID());
-        targets.clear();
-        if (service.hasVoiceMessageSendPermission(player)) {
-            if (service.hasVoiceMessageSendAllPermission(player)) {
-                targets.add(VoiceMessages.TARGET_ALL);
-            }
-            if (service.hasVoiceMessageSendTeamPermission(player)) {
-                targets.add(VoiceMessages.TARGET_TEAM);
-            }
-            if (service.hasVoiceMessageSendPlayersPermission(player)) {
-                PlayerList playerList = player.getServer().getPlayerList();
-                for (UUID playerUuid : HAS_COMPATIBLE_VERSION) {
-                    ServerPlayer p = playerList.getPlayer(playerUuid);
-                    if (p != null) {
-                        targets.add(p.getGameProfile().getName());
+        synchronized (targets) {
+            targets.clear();
+            if (service.hasVoiceMessageSendPermission(player)) {
+                if (service.hasVoiceMessageSendAllPermission(player)) {
+                    targets.add(VoiceMessages.TARGET_ALL);
+                }
+                if (service.hasVoiceMessageSendTeamPermission(player)) {
+                    targets.add(VoiceMessages.TARGET_TEAM);
+                }
+                if (service.hasVoiceMessageSendPlayersPermission(player)) {
+                    PlayerList playerList = player.getServer().getPlayerList();
+                    for (UUID playerUuid : HAS_COMPATIBLE_VERSION) {
+                        ServerPlayer p = playerList.getPlayer(playerUuid);
+                        if (p != null) {
+                            targets.add(p.getGameProfile().getName());
+                        }
                     }
                 }
+                ModifyAvailableTargetsCallback.EVENT.invoker().modifyAvailableTargets(player, targets);
             }
-            ModifyAvailableTargetsCallback.EVENT.invoker().modifyAvailableTargets(player, targets);
+            service.sendToPlayer(player, new VoiceMessageTargetsS2C(List.copyOf(targets)));
         }
-        service.sendToPlayer(player, new VoiceMessageTargetsS2C(List.copyOf(targets)));
     }
 
     public static void onPlayerDisconnected(MinecraftServer server, UUID playerUuid) {
