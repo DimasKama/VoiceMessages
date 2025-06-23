@@ -1,4 +1,5 @@
 {
+  "modmenu.descriptionTranslation.voicemessages": "Voice messages in minecraft chat",
   "voicemessages.voice_message": "Voice message",
   "voicemessages.voice_message_to": "Voice message to %s",
   "voicemessages.recording": "Recording the voice message",
