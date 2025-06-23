@@ -1,0 +1,17 @@
+{
+  "modmenu.descriptionTranslation.voicemessages": "在 Minecraft 聊天中的语音消息",
+  "voicemessages.voice_message": "语音消息",
+  "voicemessages.voice_message_to": "语音消息给 %s",
+  "voicemessages.recording": "正在录制语音消息",
+  "voicemessages.confirm": "确认发送语音消息",
+  "voicemessages.send": "发送语音消息",
+  "voicemessages.to": "接收人：%s",
+  "voicemessages.target.all": "所有人",
+  "voicemessages.target.team": "团队",
+  "voicemessages.kick.permission_violated": "语音消息权限被侵犯",
+  "voicemessages.kick.unknown_target": "未知的语音消息接收目标",
+  "voicemessages.kick.invalid": "你发送了一个无效的语音消息",
+  "voicemessages.kick.spam": "发送的语音消息的时长超过了自上次发送以来经过的时间",
+  "voicemessages.microphone_error": "麦克风错误：%s",
+  "voicemessages.unknown_target": "未知目标：%s"
+}
