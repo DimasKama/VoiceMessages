@@ -22,7 +22,7 @@ side = "BOTH"
 [[dependencies.voicemessages]]
 modId = "minecraft"
 type = "required"
-versionRange = "[${minecraft_version},)"
+versionRange = "[${min_minecraft_version},)"
 ordering = "NONE"
 side = "BOTH"
 
