@@ -1,2 +1,1 @@
-### Fabric & NeoForge
-- Made mod compatible with Minecraft 1.21.3
+- Minecraft 1.21.1 backport

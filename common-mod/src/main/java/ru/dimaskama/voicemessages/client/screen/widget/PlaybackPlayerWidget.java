@@ -7,7 +7,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
@@ -134,7 +133,7 @@ public class PlaybackPlayerWidget extends AbstractWidget {
 
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
             ResourceLocation id = (playback.isPlaying() ? PAUSE_BUTTON_SPRITES : PLAY_BUTTON_SPRITES).get(isActive(), isFocused());
-            guiGraphics.blitSprite(RenderType::guiTextured, id, getX(), getY(), width, height);
+            guiGraphics.blitSprite(id, getX(), getY(), width, height);
         }
 
         @Override
