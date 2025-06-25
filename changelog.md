@@ -1,1 +1,1 @@
-- Bump version
+- Added Simplified Chinese and Mod Menu description translations
