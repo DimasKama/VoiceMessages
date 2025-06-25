@@ -1,4 +1,5 @@
 {
+  "modmenu.descriptionTranslation.voicemessages": "Голосовые сообщения в чате игры",
   "voicemessages.voice_message": "Голосовое сообщение",
   "voicemessages.voice_message_to": "Голосовое сообщение %s",
   "voicemessages.recording": "Запись голосового сообщения",
