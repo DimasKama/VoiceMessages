@@ -1,4 +1,5 @@
 {
+  "modmenu.descriptionTranslation.voicemessages": "Голосові повідомлення у чаті",
   "voicemessages.voice_message": "Записати голосове повідомлення",
   "voicemessages.voice_message_to": "Голосове повідомлення %s",
   "voicemessages.recording": "Запис голосового повідомлення",
