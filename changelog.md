@@ -1,1 +1,1 @@
-- Minecraft 1.21.1 backport
+- Added Simplified Chinese and Mod Menu description translations
