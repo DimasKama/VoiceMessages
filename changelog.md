@@ -1,2 +1,1 @@
-### Fabric & NeoForge
-- Made mod compatible with Minecraft 1.21.3
+- Added Simplified Chinese and Mod Menu description translations
