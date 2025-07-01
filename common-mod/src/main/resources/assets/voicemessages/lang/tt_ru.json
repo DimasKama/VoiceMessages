@@ -1,0 +1,17 @@
+{
+  "modmenu.descriptionTranslation.voicemessages": "Minecraft чатындагы тавышлы хәбәрләр",
+  "voicemessages.voice_message": "Тавышлы хәбәр",
+  "voicemessages.voice_message_to": "%s уенчыга тавышлы хәбәр",
+  "voicemessages.recording": "Тавышлы хәбәрне яздыру",
+  "voicemessages.confirm": "Тавышлы хәбәр яздыруны раслау",
+  "voicemessages.send": "Тавышлы хәбәрне җибәрү",
+  "voicemessages.to": "Кемгә: %s",
+  "voicemessages.target.all": "барлыкка",
+  "voicemessages.target.team": "төркемгә",
+  "voicemessages.kick.permission_violated": "Тавышлы хәбәрләр хокугы ",
+  "voicemessages.kick.unknown_target": "Билгесез тавышлы хәбәр целе",
+  "voicemessages.kick.invalid": "Сез яраксыз тавышлы хәбәрне җибәрдегез",
+  "voicemessages.kick.spam": "Җибәрелгән тавышлы хәбәр озынлыгы элеккеге тавышлы хәбәр бирле вакытка озаграк",
+  "voicemessages.microphone_error": "Микрофон хатасы: %s",
+  "voicemessages.unknown_target": "Билгесез цель: %s"
+}
