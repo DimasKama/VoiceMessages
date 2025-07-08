@@ -1,1 +1,1 @@
-- Added Simplified Chinese and Mod Menu description translations
+- Added Tatar translation
