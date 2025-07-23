@@ -39,7 +39,7 @@ artifacts {
 
 publishing {
     publications {
-        voiceChatApi(MavenPublication) {
+        voiceMessagesApi(MavenPublication) {
             artifactId archives_base_name
             artifact(jar.archivePath) {
                 builtBy build
