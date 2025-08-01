@@ -3,6 +3,7 @@ version: ${version}
 main: ru.dimaskama.voicemessages.spigot.VoiceMessagesSpigot
 description: Voice messages in minecraft chat
 author: DimasKama
+api-version: 1.21
 depend:
   - voicechat
 permissions:

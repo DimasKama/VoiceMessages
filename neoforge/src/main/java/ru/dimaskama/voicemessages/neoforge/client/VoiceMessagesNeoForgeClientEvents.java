@@ -37,7 +37,9 @@ public final class VoiceMessagesNeoForgeClientEvents {
                     Commands::literal,
                     Commands::argument
             ).createCommand());
-            event.getDispatcher().register(Commands.literal(VoicemsgCommand.ALIAS).redirect(command));
+            event.getDispatcher().register(Commands.literal(VoicemsgCommand.ALIAS)
+                    .executes(command.getCommand())
+                    .redirect(command));
         }
     }
 

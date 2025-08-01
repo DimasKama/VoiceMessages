@@ -13,5 +13,6 @@
   "voicemessages.kick.invalid": "Сез яраксыз тавышлы хәбәрне җибәрдегез",
   "voicemessages.kick.spam": "Җибәрелгән тавышлы хәбәр озынлыгы элеккеге тавышлы хәбәр бирле вакытка озаграк",
   "voicemessages.microphone_error": "Микрофон хатасы: %s",
-  "voicemessages.unknown_target": "Билгесез цель: %s"
+  "voicemessages.unknown_target": "Билгесез цель: %s",
+  "voicemessages.no_permission_to_send_to_all": "Сезнең глобаль тавышлы хәбәрләр җибәрергә рөхсәтегез юк"
 }

@@ -13,5 +13,6 @@
   "voicemessages.kick.invalid": "Ви надіслали недійсне голосове повідомлення",
   "voicemessages.kick.spam": "Довжина надісланого голосового повідомлення перевищує час, що минув з попереднього",
   "voicemessages.microphone_error": "Помилка мікрофона: %s",
-  "voicemessages.unknown_target": "Невідома ціль: %s"
+  "voicemessages.unknown_target": "Невідома ціль: %s",
+  "voicemessages.no_permission_to_send_to_all": "У вас немає дозволу надсилати глобальні голосові повідомлення"
 }

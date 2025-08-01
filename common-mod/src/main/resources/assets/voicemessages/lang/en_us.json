@@ -13,5 +13,6 @@
   "voicemessages.kick.invalid": "You sent an invalid voice message",
   "voicemessages.kick.spam": "The length of the sent voice message is longer than the time elapsed since the previous one",
   "voicemessages.microphone_error": "Microphone error: %s",
-  "voicemessages.unknown_target": "Unknown target: %s"
+  "voicemessages.unknown_target": "Unknown target: %s",
+  "voicemessages.no_permission_to_send_to_all": "You don't have permission to send global voice messages"
 }
