@@ -41,7 +41,9 @@ public final class VoiceMessagesFabricClient implements ClientModInitializer {
                         ClientCommandManager::literal,
                         ClientCommandManager::argument
                 ).createCommand());
-                dispatcher.register(ClientCommandManager.literal(VoicemsgCommand.ALIAS).redirect(command));
+                dispatcher.register(ClientCommandManager.literal(VoicemsgCommand.ALIAS)
+                        .executes(command.getCommand())
+                        .redirect(command));
             });
         }
     }

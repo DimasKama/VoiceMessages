@@ -13,5 +13,6 @@
   "voicemessages.kick.invalid": "你发送了一个无效的语音消息",
   "voicemessages.kick.spam": "发送的语音消息的时长超过了自上次发送以来经过的时间",
   "voicemessages.microphone_error": "麦克风错误：%s",
-  "voicemessages.unknown_target": "未知目标：%s"
+  "voicemessages.unknown_target": "未知目标：%s",
+  "voicemessages.no_permission_to_send_to_all": "您无权发送全局语音消息"
 }

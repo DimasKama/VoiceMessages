@@ -13,5 +13,6 @@
   "voicemessages.kick.invalid": "Вы отправили невалидное голосовое сообщение",
   "voicemessages.kick.spam": "Длительность отправленного голосового сообщения больше времени, прошедшего с отправки предыдущего",
   "voicemessages.microphone_error": "Ошибка микрофона: %s",
-  "voicemessages.unknown_target": "Неизвестный адресат: %s"
+  "voicemessages.unknown_target": "Неизвестный адресат: %s",
+  "voicemessages.no_permission_to_send_to_all": "У вас нет разрешения на отправку глобальных голосовых сообщений"
 }
