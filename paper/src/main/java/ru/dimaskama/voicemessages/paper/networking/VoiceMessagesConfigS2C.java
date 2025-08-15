@@ -1,10 +1,10 @@
-package ru.dimaskama.voicemessages.spigot.networking;
+package ru.dimaskama.voicemessages.paper.networking;
 
-import ru.dimaskama.voicemessages.spigot.VoiceMessagesSpigot;
+import ru.dimaskama.voicemessages.paper.VoiceMessagesPaper;
 
 public record VoiceMessagesConfigS2C(int maxVoiceMessageDurationMs) {
 
-    public static final String CHANNEL = VoiceMessagesSpigot.id("config_v0");
+    public static final String CHANNEL = VoiceMessagesPaper.id("config_v0");
 
     public byte[] encode() {
         byte[] bytes = new byte[PacketUtils.getVarIntSize(maxVoiceMessageDurationMs)];

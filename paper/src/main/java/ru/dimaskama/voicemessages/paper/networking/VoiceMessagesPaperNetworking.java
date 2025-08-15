@@ -1,4 +1,4 @@
-package ru.dimaskama.voicemessages.spigot.networking;
+package ru.dimaskama.voicemessages.paper.networking;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -14,22 +14,22 @@ import ru.dimaskama.voicemessages.VoiceMessagesUtil;
 import ru.dimaskama.voicemessages.api.ModifyAvailableTargetsCallback;
 import ru.dimaskama.voicemessages.api.VoiceMessageReceivedCallback;
 import ru.dimaskama.voicemessages.config.Punishment;
-import ru.dimaskama.voicemessages.spigot.VoiceMessagesSpigot;
+import ru.dimaskama.voicemessages.paper.VoiceMessagesPaper;
 
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static ru.dimaskama.voicemessages.spigot.networking.PacketUtils.*;
+import static ru.dimaskama.voicemessages.paper.networking.PacketUtils.*;
 
-public final class VoiceMessagesSpigotNetworking {
+public final class VoiceMessagesPaperNetworking {
 
-    public static final String VOICE_MESSAGES_VERSION_C2S = VoiceMessagesSpigot.id("version");
-    public static final String VOICE_MESSAGE_CHUNK_S2C_CHANNEL = VoiceMessagesSpigot.id("voice_message_chunk_s2c");
-    public static final String VOICE_MESSAGE_END_S2C_CHANNEL = VoiceMessagesSpigot.id("voice_message_end_s2c");
-    public static final String VOICE_MESSAGE_CHUNK_C2S_CHANNEL = VoiceMessagesSpigot.id("voice_message_chunk_c2s");
-    public static final String VOICE_MESSAGE_END_C2S_CHANNEL = VoiceMessagesSpigot.id("voice_message_end_c2s");
+    public static final String VOICE_MESSAGES_VERSION_C2S = VoiceMessagesPaper.id("version");
+    public static final String VOICE_MESSAGE_CHUNK_S2C_CHANNEL = VoiceMessagesPaper.id("voice_message_chunk_s2c");
+    public static final String VOICE_MESSAGE_END_S2C_CHANNEL = VoiceMessagesPaper.id("voice_message_end_s2c");
+    public static final String VOICE_MESSAGE_CHUNK_C2S_CHANNEL = VoiceMessagesPaper.id("voice_message_chunk_c2s");
+    public static final String VOICE_MESSAGE_END_C2S_CHANNEL = VoiceMessagesPaper.id("voice_message_end_c2s");
     private static final Set<UUID> HAS_COMPATIBLE_VERSION = Sets.newConcurrentHashSet();
     private static final ListMultimap<UUID, String> AVAILABLE_TARGETS = Multimaps.synchronizedListMultimap(ArrayListMultimap.create());
     private static final Map<UUID, Long> VOICE_MESSAGES_TIMES = new ConcurrentHashMap<>();
@@ -46,7 +46,7 @@ public final class VoiceMessagesSpigotNetworking {
     }
 
     public static void sendConfig(Player player, VoiceMessagesConfigS2C config) {
-        player.sendPluginMessage(VoiceMessagesSpigot.getInstance(), VoiceMessagesConfigS2C.CHANNEL, config.encode());
+        player.sendPluginMessage(VoiceMessagesPaper.getInstance(), VoiceMessagesConfigS2C.CHANNEL, config.encode());
     }
 
     public static void updateTargets() {
@@ -81,7 +81,7 @@ public final class VoiceMessagesSpigotNetworking {
                 ModifyAvailableTargetsCallback.EVENT.invoker().modifyAvailableTargets(player, targets);
             }
             player.sendPluginMessage(
-                    VoiceMessagesSpigot.getInstance(),
+                    VoiceMessagesPaper.getInstance(),
                     VoiceMessageTargetsS2C.CHANNEL,
                     new VoiceMessageTargetsS2C(List.copyOf(targets)).encode()
             );
@@ -278,7 +278,7 @@ public final class VoiceMessagesSpigotNetworking {
             pos += writeVarInt(end, pos, encodedTarget.length);
             System.arraycopy(encodedTarget, 0, end, pos, encodedTarget.length);
         }
-        Plugin plugin = VoiceMessagesSpigot.getInstance();
+        Plugin plugin = VoiceMessagesPaper.getInstance();
         for (Player player : players) {
             for (byte[] chunk : chunks) {
                 player.sendPluginMessage(plugin, VOICE_MESSAGE_CHUNK_S2C_CHANNEL, chunk);

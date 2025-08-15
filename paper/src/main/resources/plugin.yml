@@ -1,8 +1,9 @@
 name: voicemessages
 version: ${version}
-main: ru.dimaskama.voicemessages.spigot.VoiceMessagesSpigot
+main: ru.dimaskama.voicemessages.paper.VoiceMessagesPaper
 description: Voice messages in minecraft chat
 author: DimasKama
+folia-supported: true
 api-version: 1.21
 depend:
   - voicechat

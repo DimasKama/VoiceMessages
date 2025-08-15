@@ -1,19 +1,19 @@
-package ru.dimaskama.voicemessages.spigot;
+package ru.dimaskama.voicemessages.paper;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.api.VoiceMessagesApiInitCallback;
 import ru.dimaskama.voicemessages.logger.AbstractLogger;
-import ru.dimaskama.voicemessages.spigot.impl.VoiceMessagesApiImpl;
-import ru.dimaskama.voicemessages.spigot.networking.VoiceMessagesSpigotNetworking;
+import ru.dimaskama.voicemessages.paper.impl.VoiceMessagesApiImpl;
+import ru.dimaskama.voicemessages.paper.networking.VoiceMessagesPaperNetworking;
 
 import java.util.logging.Logger;
 
-public final class VoiceMessagesSpigot extends JavaPlugin {
+public final class VoiceMessagesPaper extends JavaPlugin {
 
-    private static VoiceMessagesSpigot instance;
+    private static VoiceMessagesPaper instance;
 
-    public VoiceMessagesSpigot() {
+    public VoiceMessagesPaper() {
         super();
     }
 
@@ -21,7 +21,7 @@ public final class VoiceMessagesSpigot extends JavaPlugin {
     public void onEnable() {
         instance = this;
         Logger logger = getLogger();
-        VoiceMessages.init(getDescription().getVersion(), new AbstractLogger() {
+        VoiceMessages.init(getPluginMeta().getVersion(), new AbstractLogger() {
             @Override
             public void info(String message) {
                 logger.info(message);
@@ -55,17 +55,34 @@ public final class VoiceMessagesSpigot extends JavaPlugin {
                 logger.severe(e.getLocalizedMessage());
             }
         });
-        getServer().getPluginManager().registerEvents(new VoiceMessagesSpigotListener(this), this);
-        getServer().getScheduler().runTaskTimer(this, VoiceMessagesSpigotNetworking::tickBuildingVoiceMessages, 5L, 5L);
+        getServer().getPluginManager().registerEvents(new VoiceMessagesPaperListener(this), this);
+        if (isFolia()) {
+            getServer()
+                    .getGlobalRegionScheduler()
+                    .runAtFixedRate(this, t -> VoiceMessagesPaperNetworking.tickBuildingVoiceMessages(), 5L, 5L);
+        } else {
+            getServer()
+                    .getScheduler()
+                    .runTaskTimer(this, VoiceMessagesPaperNetworking::tickBuildingVoiceMessages, 5L, 5L);
+        }
 
         VoiceMessages.SERVER_CONFIG.loadOrCreate();
 
-        VoiceMessagesSpigotNetworking.init(this);
+        VoiceMessagesPaperNetworking.init(this);
 
         VoiceMessagesApiInitCallback.EVENT.invoker().setVoiceMessagesApi(new VoiceMessagesApiImpl());
     }
 
-    public static VoiceMessagesSpigot getInstance() {
+    public static boolean isFolia() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    public static VoiceMessagesPaper getInstance() {
         return instance;
     }
 
