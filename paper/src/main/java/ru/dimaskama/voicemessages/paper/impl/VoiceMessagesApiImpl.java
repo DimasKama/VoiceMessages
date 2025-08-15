@@ -1,9 +1,9 @@
-package ru.dimaskama.voicemessages.spigot.impl;
+package ru.dimaskama.voicemessages.paper.impl;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import ru.dimaskama.voicemessages.api.VoiceMessagesApi;
-import ru.dimaskama.voicemessages.spigot.networking.VoiceMessagesSpigotNetworking;
+import ru.dimaskama.voicemessages.paper.networking.VoiceMessagesPaperNetworking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +13,14 @@ public class VoiceMessagesApiImpl implements VoiceMessagesApi {
 
     @Override
     public boolean isPlayerHasCompatibleModVersion(UUID playerUuid) {
-        return VoiceMessagesSpigotNetworking.hasCompatibleVersion(playerUuid);
+        return VoiceMessagesPaperNetworking.hasCompatibleVersion(playerUuid);
     }
 
     @Override
     public boolean updateAvailableTargets(UUID playerUuid) {
         Player player = Bukkit.getPlayer(playerUuid);
         if (player != null) {
-            VoiceMessagesSpigotNetworking.updateTargets(player);
+            VoiceMessagesPaperNetworking.updateTargets(player);
             return true;
         }
         return false;
@@ -35,7 +35,7 @@ public class VoiceMessagesApiImpl implements VoiceMessagesApi {
                 players.add(player);
             }
         }
-        VoiceMessagesSpigotNetworking.sendVoiceMessage(senderUuid, players, message, displayTarget);
+        VoiceMessagesPaperNetworking.sendVoiceMessage(senderUuid, players, message, displayTarget);
     }
 
 }

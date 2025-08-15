@@ -1,7 +1,5 @@
-- Bump version to 1.0.7
+- Bump version to 1.0.8
 
-### Fabric / NeoForge
-- Add shortcut command `/vmsg` and `/voicemsg` (without a target) to send a global voice message
-
-### Spigot
-- Fix legacy plugin warning in console
+### Paper
+- Rename Spigot version to Paper
+- Fix Folia incompatibility

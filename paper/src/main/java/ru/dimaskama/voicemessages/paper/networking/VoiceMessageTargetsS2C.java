@@ -1,16 +1,16 @@
-package ru.dimaskama.voicemessages.spigot.networking;
+package ru.dimaskama.voicemessages.paper.networking;
 
-import ru.dimaskama.voicemessages.spigot.VoiceMessagesSpigot;
+import ru.dimaskama.voicemessages.paper.VoiceMessagesPaper;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.dimaskama.voicemessages.spigot.networking.PacketUtils.*;
+import static ru.dimaskama.voicemessages.paper.networking.PacketUtils.*;
 
 public record VoiceMessageTargetsS2C(List<String> targets) {
 
-    public static final String CHANNEL = VoiceMessagesSpigot.id("targets");
+    public static final String CHANNEL = VoiceMessagesPaper.id("targets");
 
     public byte[] encode() {
         int packetSize = getVarIntSize(targets.size());
