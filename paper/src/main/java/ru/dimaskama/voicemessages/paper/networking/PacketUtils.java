@@ -1,4 +1,4 @@
-package ru.dimaskama.voicemessages.spigot.networking;
+package ru.dimaskama.voicemessages.paper.networking;
 
 import com.mojang.datafixers.util.Pair;
 import ru.dimaskama.voicemessages.VoiceMessages;
