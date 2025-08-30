@@ -57,7 +57,7 @@ public final class VoiceMessagesNeoForge {
 
             @Override
             public void sendToServer(CustomPacketPayload payload) {
-                net.neoforged.neoforge.client.network.ClientPacketDistributor.sendToServer(payload);
+                PacketDistributor.sendToServer(payload);
             }
 
             @Override
