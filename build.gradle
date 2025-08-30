@@ -7,7 +7,88 @@ plugins {
     id 'io.papermc.hangar-publish-plugin' version "${hangar_publish_version}" apply false
 }
 
-apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/taskutils.gradle"
+def runCommand(String commandName, boolean ignoreExitCode, String... commands) {
+    def osName = System.getProperty("os.name").toLowerCase()
+    def args = []
+
+    if (osName.contains("windows")) {
+        args.add('cmd')
+        args.add('/c')
+    } else {
+        args.add('bash')
+        args.add('-c')
+    }
+
+    args.addAll(commands)
+
+    printGreen("Executing '{}'", commandName)
+
+    def result = exec {
+        commandLine args
+        ignoreExitValue ignoreExitCode
+    }
+
+    if (result.exitValue == 0) {
+        printGreen("Successfully executed '{}'", commandName)
+    } else if (ignoreExitCode) {
+        logger.error("Task '{}' failed with exit code {} - Ignoring", commandName, result.exitValue)
+    }
+    return result
+}
+
+def runGradleTasks(List<String> mandatoryTasks, List<String> optionalTasks) {
+    def errored = false
+    def results = []
+    for (String task : mandatoryTasks) {
+        if (errored) {
+            results.add([task, null])
+            continue
+        }
+        def result = runGradleTask(task, true)
+        if (result.exitValue != 0) {
+            errored = true
+        }
+        results.add([task, result])
+    }
+    for (String task : optionalTasks) {
+        if (errored) {
+            results.add([task, null])
+            continue
+        }
+        def result = runGradleTask(task, true)
+        results.add([task, result])
+    }
+    logger.lifecycle('')
+    printGreen('Execution results:')
+    results.forEach {
+        def result = it[1]
+        printGreen('{} -> {}', it[0], result == null ? 'SKIPPED' : (result.exitValue == 0 ? 'SUCCESS' : 'FAILURE'))
+    }
+}
+
+def runGradleTask(String taskName, boolean ignoreExitCode) {
+    def osName = System.getProperty("os.name").toLowerCase()
+    def gradlewCmd = osName.contains("windows") ? "gradlew.bat" : "./gradlew"
+    return runCommand(taskName, ignoreExitCode, "${gradlewCmd} ${taskName}")
+}
+
+def printGreen(String template, Object... args) {
+    def green = '\u001B[32m'
+    def reset = '\u001B[0m'
+    logger.lifecycle("${green}${template}${reset}", args)
+}
+
+ext.runGradleTasks = { List<String> mandatoryTasks, List<String> optionalTasks ->
+    runGradleTasks(mandatoryTasks, optionalTasks)
+}
+
+ext.runGradleTask = { String taskName, boolean ignoreExitCode ->
+    runGradleTask(taskName, ignoreExitCode)
+}
+
+ext.runCommand = { String commandName, boolean ignoreExitCode, String... commands ->
+    runCommand(commandName, ignoreExitCode, commands)
+}
 
 tasks.register('publishModsToModrinth') {
     group = 'voicemessages'
