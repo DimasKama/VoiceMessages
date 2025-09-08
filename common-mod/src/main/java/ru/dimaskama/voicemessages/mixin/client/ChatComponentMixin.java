@@ -11,7 +11,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -90,7 +89,7 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
                             playerWidth,
                             playerHeight
                     );
-                    player.setAlpha(ARGB.alpha(color));
+                    player.setAlpha(color >>> 24);
                     player.render(instance);
                     player.transform(instance.pose().last().pose());
                     voicemessages_visiblePlaybackPlayers.add(player);

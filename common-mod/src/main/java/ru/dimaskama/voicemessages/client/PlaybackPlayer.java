@@ -4,9 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -45,7 +43,7 @@ public class PlaybackPlayer {
 
     public void setAlpha(int alpha) {
         this.alpha = alpha;
-        overlayColor = ARGB.color(alpha, 0xFFFFFF);
+        overlayColor = (alpha << 24) | 0xFFFFFF;
     }
 
     public PlaybackPlayer setRectangle(int x, int y, int width, int height) {
@@ -70,7 +68,6 @@ public class PlaybackPlayer {
     private void renderPlayButton(GuiGraphics guiGraphics) {
         ResourceLocation id = playback.isPlaying() ? PAUSE_TEXTURE : PLAY_TEXTURE;
         guiGraphics.blitSprite(
-                RenderType::guiTextured,
                 id,
                 playButtonRectangle.left(),
                 playButtonRectangle.top(),
