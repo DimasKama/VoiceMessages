@@ -2,7 +2,6 @@ package ru.dimaskama.voicemessages.client.render;
 
 import it.unimi.dsi.fastutil.floats.FloatList;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import ru.dimaskama.voicemessages.client.Playback;
 
@@ -32,7 +31,7 @@ public final class PlaybackRenderer {
             int xx = x + i;
             int yy = y + ((height - h) >> 1);
             if (recorded || !isOdd) {
-                guiGraphics.fill(xx, yy, xx + 1, yy + h, ARGB.color(alpha, isOdd
+                guiGraphics.fill(xx, yy, xx + 1, yy + h, (alpha << 24) | (isOdd
                         ? passed ? 0xFFCCCCCC : 0xFF888888
                         : passed ? 0xFFFFFFFF : 0xFFAAAAAA));
             }
