@@ -1,5 +1,6 @@
 package ru.dimaskama.voicemessages.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -67,14 +68,17 @@ public class PlaybackPlayer {
 
     private void renderPlayButton(GuiGraphics guiGraphics) {
         ResourceLocation id = playback.isPlaying() ? PAUSE_TEXTURE : PLAY_TEXTURE;
+        RenderSystem.enableBlend();
+        guiGraphics.setColor(1.0F, 1.0F, 1.0F, alpha / 255.0F);
         guiGraphics.blitSprite(
                 id,
                 playButtonRectangle.left(),
                 playButtonRectangle.top(),
                 playButtonRectangle.width(),
-                playButtonRectangle.height(),
-                overlayColor
+                playButtonRectangle.height()
         );
+        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.disableBlend();
     }
 
     private void renderPlayback(GuiGraphics guiGraphics) {
@@ -140,7 +144,7 @@ public class PlaybackPlayer {
         Vector3f pos = matrix.transformPosition(rectangle.left(), rectangle.top(), 0.0F, new Vector3f());
         Vector3f dims = matrix.transformPosition(rectangle.right(), rectangle.bottom(), 0.0F, new Vector3f())
                 .sub(pos);
-        return new ScreenRectangle(Mth.floor(pos.x), Mth.floor(pos.y), Mth.floor(pos.x), Mth.floor(dims.y));
+        return new ScreenRectangle(Mth.floor(pos.x), Mth.floor(pos.y), Mth.floor(dims.x), Mth.floor(dims.y));
     }
 
 }

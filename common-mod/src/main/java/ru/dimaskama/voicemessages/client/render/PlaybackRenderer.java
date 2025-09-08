@@ -32,8 +32,8 @@ public final class PlaybackRenderer {
             int yy = y + ((height - h) >> 1);
             if (recorded || !isOdd) {
                 guiGraphics.fill(xx, yy, xx + 1, yy + h, (alpha << 24) | (isOdd
-                        ? passed ? 0xFFCCCCCC : 0xFF888888
-                        : passed ? 0xFFFFFFFF : 0xFFAAAAAA));
+                        ? passed ? 0xCCCCCC : 0x888888
+                        : passed ? 0xFFFFFF : 0xAAAAAA));
             }
         }
     }
