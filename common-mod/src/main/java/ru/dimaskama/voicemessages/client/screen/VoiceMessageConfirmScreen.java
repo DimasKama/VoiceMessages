@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import ru.dimaskama.voicemessages.*;
 import ru.dimaskama.voicemessages.client.Playback;
 import ru.dimaskama.voicemessages.client.PlaybackManager;
-import ru.dimaskama.voicemessages.client.screen.widget.PlaybackPlayerWidget;
+import ru.dimaskama.voicemessages.client.PlaybackPlayer;
 import ru.dimaskama.voicemessages.networking.VoiceMessageChunkC2S;
 import ru.dimaskama.voicemessages.networking.VoiceMessageEndC2S;
 
@@ -34,7 +34,7 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
     private final Component targetText;
     private int targetTextX;
     private int targetTextY;
-    private PlaybackPlayerWidget playbackPlayerWidget;
+    private PlaybackPlayer playbackPlayer;
 
     public VoiceMessageConfirmScreen(Screen parent, int leftX, int fromBottomY, List<short[]> audio, String target) {
         super(Component.translatable("voicemessages.confirm"), parent);
@@ -48,12 +48,11 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
     @Override
     protected void init() {
         super.init();
-        if (playbackPlayerWidget == null) {
-            playbackPlayerWidget = new PlaybackPlayerWidget(PlaybackManager.MAIN, playback, 0xFFAAAAAA);
-        }
         int bottomY = height - fromBottomY;
-        playbackPlayerWidget.setRectangle(260, 15, leftX + 1, bottomY - 15);
-        addRenderableWidget(playbackPlayerWidget);
+        if (playbackPlayer == null) {
+            playbackPlayer = new PlaybackPlayer(PlaybackManager.MAIN, playback, 0xFFAAAAAA);
+            playbackPlayer.setRectangle(leftX + 1, bottomY - 15, 260, 15);
+        }
         ImageButton sendButton = addRenderableWidget(new ImageButton(
                 leftX + 265,
                 bottomY - 15,
@@ -106,6 +105,7 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0.0F, 0.0F, 150.0F);
         super.actualRender(guiGraphics, mouseX, mouseY, delta);
+        playbackPlayer.render(guiGraphics);
         if (targetText != null) {
             guiGraphics.drawString(font, targetText, targetTextX, targetTextY, 0xFFFFFFFF);
         }
@@ -123,6 +123,14 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (playbackPlayer.mouseClicked((int) mouseX, (int) mouseY, button)) {
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

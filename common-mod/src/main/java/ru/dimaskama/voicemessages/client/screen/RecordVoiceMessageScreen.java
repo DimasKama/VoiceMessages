@@ -18,9 +18,9 @@ import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.VoiceMessagesModService;
 import ru.dimaskama.voicemessages.client.Playback;
 import ru.dimaskama.voicemessages.client.PlaybackManager;
+import ru.dimaskama.voicemessages.client.PlaybackPlayer;
 import ru.dimaskama.voicemessages.client.networking.VoiceMessagesClientNetworking;
 import ru.dimaskama.voicemessages.client.render.PlaybackRenderer;
-import ru.dimaskama.voicemessages.client.screen.widget.PlaybackPlayerWidget;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -177,14 +177,15 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
                 bottomY - 15,
                 240,
                 15,
+                0xFF,
                 recordProgress,
                 maxFrames,
                 audioLevels
         );
         int maxDuration = VoiceMessagesClientNetworking.getMaxVoiceMessageDurationMs();
-        String timeStr = PlaybackPlayerWidget.formatTime((int) (recordProgress * maxDuration))
+        String timeStr = PlaybackPlayer.formatTime((int) (recordProgress * maxDuration))
                 + '/'
-                + PlaybackPlayerWidget.formatTime(maxDuration);
+                + PlaybackPlayer.formatTime(maxDuration);
         guiGraphics.drawString(font, timeStr, leftX + 247, bottomY - 12, 0xFFFFFFFF);
         int timeStrWidth = font.width(timeStr);
 
