@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.client.render.PlaybackRenderer;
@@ -56,9 +57,9 @@ public class PlaybackPlayer {
     }
 
     public void transform(Matrix4f matrix) {
-        playButtonRectangle = playButtonRectangle.transformAxisAligned(matrix);
-        playbackTimeRectangle = playbackTimeRectangle.transformAxisAligned(matrix);
-        playbackRectangle = playbackRectangle.transformAxisAligned(matrix);
+        playButtonRectangle = transformRectangle(playButtonRectangle, matrix);
+        playbackTimeRectangle = transformRectangle(playbackTimeRectangle, matrix);
+        playbackRectangle = transformRectangle(playbackRectangle, matrix);
     }
 
     public void render(GuiGraphics guiGraphics) {
@@ -136,6 +137,13 @@ public class PlaybackPlayer {
             }
         }
         return false;
+    }
+
+    private static ScreenRectangle transformRectangle(ScreenRectangle rectangle, Matrix4f matrix) {
+        Vector3f pos = matrix.transformPosition(rectangle.left(), rectangle.top(), 0.0F, new Vector3f());
+        Vector3f dims = matrix.transformPosition(rectangle.right(), rectangle.bottom(), 0.0F, new Vector3f())
+                .sub(pos);
+        return new ScreenRectangle(Mth.floor(pos.x), Mth.floor(pos.y), Mth.floor(pos.x), Mth.floor(dims.y));
     }
 
 }
