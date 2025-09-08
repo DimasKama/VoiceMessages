@@ -11,9 +11,8 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
-import org.joml.Matrix3x2f;
-import org.joml.Vector2f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,8 +24,8 @@ import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.client.GuiMessageTagHack;
 import ru.dimaskama.voicemessages.client.Playback;
 import ru.dimaskama.voicemessages.client.PlaybackManager;
+import ru.dimaskama.voicemessages.client.PlaybackPlayer;
 import ru.dimaskama.voicemessages.client.screen.OverlayScreen;
-import ru.dimaskama.voicemessages.client.screen.widget.PlaybackPlayerWidget;
 import ru.dimaskama.voicemessages.duck.client.ChatComponentDuck;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
     @Shadow public abstract double getScale();
 
     @Unique
-    private List<PlaybackPlayerWidget> voicemessages_visiblePlaybackPlayerWidgets;
+    private List<PlaybackPlayer> voicemessages_visiblePlaybackPlayers;
 
     @ModifyReturnValue(method = "isChatFocused", at = @At("TAIL"))
     private boolean modifyChatFocused(boolean original) {
@@ -54,10 +53,10 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
     @Inject(method = "render", at = @At("HEAD"))
     private void renderHead(GuiGraphics guiGraphics, int currentTick, int mouseX, int mouseY, boolean focused, CallbackInfo ci) {
         if (VoiceMessagesMod.isActive()) {
-            if (voicemessages_visiblePlaybackPlayerWidgets == null) {
-                voicemessages_visiblePlaybackPlayerWidgets = new ArrayList<>();
+            if (voicemessages_visiblePlaybackPlayers == null) {
+                voicemessages_visiblePlaybackPlayers = new ArrayList<>();
             } else {
-                voicemessages_visiblePlaybackPlayerWidgets.clear();
+                voicemessages_visiblePlaybackPlayers.clear();
             }
         }
     }
@@ -74,36 +73,27 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
         if (VoiceMessagesMod.isActive()) {
             Playback playback = GuiMessageTagHack.getPlayback(line);
             if (playback != null) {
-                int addX = font.width(formattedCharSequence);
-                if (addX > 0) {
-                    addX += 4;
-                }
-                int lineHeight = getLineHeight();
-                PlaybackPlayerWidget playbackPlayerWidget = new PlaybackPlayerWidget(PlaybackManager.MAIN, playback, 0);
-                Matrix3x2f matrix3x2f = instance.pose();
-                Vector2f vector2f = new Vector2f();
-                vector2f.set(x + addX, y - ((lineHeight - 9) >> 1));
-                matrix3x2f.transformPosition(vector2f);
-                int playbackWidth = getWidth() - addX - x;
-                playbackPlayerWidget.setRectangle(
-                        playbackWidth,
-                        lineHeight,
-                        (int) vector2f.x,
-                        (int) vector2f.y
-                );
-                addX += playbackWidth;
-                playbackPlayerWidget.setScale((float) getScale());
-                voicemessages_visiblePlaybackPlayerWidgets.add(playbackPlayerWidget);
-            }
-        }
-    }
-
-    @Inject(method = "render", at = @At("TAIL"))
-    private void renderTail(GuiGraphics guiGraphics, int currentTick, int mouseX, int mouseY, boolean focused, CallbackInfo ci) {
-        if (VoiceMessagesMod.isActive()) {
-            if (!voicemessages_visiblePlaybackPlayerWidgets.isEmpty()) {
-                for (PlaybackPlayerWidget playbackPlayerWidget : voicemessages_visiblePlaybackPlayerWidgets) {
-                    playbackPlayerWidget.render(guiGraphics, mouseX, mouseY, 1.0F);
+                double scale = getScale();
+                if (scale >= 0.1) {
+                    int addX = font.width(formattedCharSequence);
+                    if (addX > 0) {
+                        addX += 4;
+                    }
+                    int lineHeight = getLineHeight();
+                    int playerX = x + addX;
+                    int playerY = y - ((lineHeight - 8) >> 1);
+                    int playerWidth = (int) (getWidth() / scale) - addX - x;
+                    int playerHeight = lineHeight;
+                    PlaybackPlayer player = new PlaybackPlayer(PlaybackManager.MAIN, playback, 0).setRectangle(
+                            playerX,
+                            playerY,
+                            playerWidth,
+                            playerHeight
+                    );
+                    player.setAlpha(ARGB.alpha(color));
+                    player.render(instance);
+                    player.transform(instance.pose());
+                    voicemessages_visiblePlaybackPlayers.add(player);
                 }
             }
         }
@@ -135,8 +125,8 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
     }
 
     @Override
-    public List<PlaybackPlayerWidget> voicemessages_getVisiblePlaybackPlayerWidgets() {
-        return voicemessages_visiblePlaybackPlayerWidgets;
+    public List<PlaybackPlayer> voicemessages_getVisiblePlaybackPlayers() {
+        return voicemessages_visiblePlaybackPlayers;
     }
 
 }

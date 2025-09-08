@@ -17,10 +17,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesMod;
+import ru.dimaskama.voicemessages.client.PlaybackPlayer;
 import ru.dimaskama.voicemessages.client.networking.VoiceMessagesClientNetworking;
 import ru.dimaskama.voicemessages.client.screen.RecordVoiceMessageScreen;
 import ru.dimaskama.voicemessages.client.screen.VoiceMessageConfirmScreen;
-import ru.dimaskama.voicemessages.client.screen.widget.PlaybackPlayerWidget;
 import ru.dimaskama.voicemessages.duck.client.ChatComponentDuck;
 
 import java.util.List;
@@ -90,8 +90,8 @@ abstract class ChatScreenMixin extends Screen {
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     private void mouseClickedHead(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
         if (VoiceMessagesMod.isActive()) {
-            for (PlaybackPlayerWidget playbackPlayerWidget : ((ChatComponentDuck) minecraft.gui.getChat()).voicemessages_getVisiblePlaybackPlayerWidgets()) {
-                if (playbackPlayerWidget.mouseClicked(mouseX, mouseY, button)) {
+            for (PlaybackPlayer player : ((ChatComponentDuck) minecraft.gui.getChat()).voicemessages_getVisiblePlaybackPlayers()) {
+                if (player.mouseClicked((int) mouseX, (int) mouseY, button)) {
                     cir.setReturnValue(true);
                     return;
                 }
