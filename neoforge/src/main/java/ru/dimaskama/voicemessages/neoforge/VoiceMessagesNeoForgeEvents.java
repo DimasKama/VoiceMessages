@@ -37,7 +37,7 @@ public final class VoiceMessagesNeoForgeEvents {
     private static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (VoiceMessagesMod.isActive()) {
             if (event.getEntity() instanceof ServerPlayer player) {
-                VoiceMessagesServerNetworking.onPlayerDisconnected(player.getServer(), player.getUUID());
+                VoiceMessagesServerNetworking.onPlayerDisconnected(player.level().getServer(), player.getUUID());
             }
         }
     }

@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -88,10 +89,10 @@ abstract class ChatScreenMixin extends Screen {
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
-    private void mouseClickedHead(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+    private void mouseClickedHead(MouseButtonEvent mouseButtonEvent, boolean bl, CallbackInfoReturnable<Boolean> cir) {
         if (VoiceMessagesMod.isActive()) {
             for (PlaybackPlayer player : ((ChatComponentDuck) minecraft.gui.getChat()).voicemessages_getVisiblePlaybackPlayers()) {
-                if (player.mouseClicked((int) mouseX, (int) mouseY, button)) {
+                if (player.mouseClicked((int) mouseButtonEvent.x(), (int) mouseButtonEvent.y(), mouseButtonEvent.button())) {
                     cir.setReturnValue(true);
                     return;
                 }

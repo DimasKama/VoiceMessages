@@ -57,9 +57,9 @@ public final class VoiceMessagesClientNetworking {
                     if (sender != null) {
                         text = sender.getTabListDisplayName();
                         if (text == null) {
-                            text = Component.literal(sender.getProfile().getName());
+                            text = Component.literal(sender.getProfile().name());
                         }
-                        VoiceMessages.getLogger().info("(Client) Received voice message (" +  duration + "ms) from " + sender.getProfile().getName());
+                        VoiceMessages.getLogger().info("(Client) Received voice message (" +  duration + "ms) from " + sender.getProfile().name());
                     } else {
                         text = Component.empty();
                         VoiceMessages.getLogger().info("(Client) Received voice message (" + duration + "ms) from unknown player (" + UndashedUuid.toString(senderUuid) + ")");

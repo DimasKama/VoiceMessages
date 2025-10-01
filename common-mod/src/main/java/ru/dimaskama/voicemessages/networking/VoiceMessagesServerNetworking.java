@@ -31,22 +31,22 @@ public final class VoiceMessagesServerNetworking {
                 VoiceMessagesModService service = VoiceMessagesMod.getService();
                 ServerConfig config = VoiceMessages.SERVER_CONFIG.getData();
                 service.sendToPlayer(sender, new VoiceMessagesConfigS2C(config.maxVoiceMessageDurationMs()));
-                updateTargets(sender.getServer());
+                updateTargets(sender.level().getServer());
             } else {
-                VoiceMessages.getLogger().warn(sender.getGameProfile().getName() + " sent his voicemessages modVersion multiple times");
+                VoiceMessages.getLogger().warn(sender.getGameProfile().name() + " sent his voicemessages modVersion multiple times");
             }
         }
     }
 
     public static void onVoiceMessageChunkReceived(ServerPlayer sender, VoiceMessageChunkC2S chunk) {
         if (!hasCompatibleVersion(sender)) {
-            VoiceMessages.getLogger().warn(sender.getGameProfile().getName() + " sent voice message chunk without compatible VoiceMessages modVersion");
+            VoiceMessages.getLogger().warn(sender.getGameProfile().name() + " sent voice message chunk without compatible VoiceMessages modVersion");
             return;
         }
 
         if (!VoiceMessagesMod.getService().hasVoiceMessageSendPermission(sender)) {
             Punishment punishment = VoiceMessages.SERVER_CONFIG.getData().voiceMessageInvalidPunishment();
-            VoiceMessages.getLogger().warn(sender.getGameProfile().getName() + " sent voice message chunk without " + VoiceMessages.VOICE_MESSAGE_SEND_PERMISSION + " permission. Punishment: " + punishment.asString());
+            VoiceMessages.getLogger().warn(sender.getGameProfile().name() + " sent voice message chunk without " + VoiceMessages.VOICE_MESSAGE_SEND_PERMISSION + " permission. Punishment: " + punishment.asString());
             switch (punishment) {
                 case KICK:
                     sender.connection.disconnect(Component.translatable("voicemessages.kick.permission_violated"));
@@ -83,7 +83,7 @@ public final class VoiceMessagesServerNetworking {
             synchronized (builder) {
                 if (!builder.discarded) {
                     int duration = builder.getDuration();
-                    VoiceMessages.getLogger().info("Received voice message (" +  duration + "ms) from " + sender.getGameProfile().getName());
+                    VoiceMessages.getLogger().info("Received voice message (" +  duration + "ms) from " + sender.getGameProfile().name());
 
                     long currentTime = System.currentTimeMillis();
                     Long lastTime = VOICE_MESSAGES_TIMES.put(sender.getUUID(), currentTime);
@@ -106,7 +106,7 @@ public final class VoiceMessagesServerNetworking {
             }
         } else {
             Punishment punishment = VoiceMessages.SERVER_CONFIG.getData().voiceMessageInvalidPunishment();
-            VoiceMessages.getLogger().warn("Received voice message end packet without previous chunks from " + sender.getGameProfile().getName() + ". Punishment: " + punishment.asString());
+            VoiceMessages.getLogger().warn("Received voice message end packet without previous chunks from " + sender.getGameProfile().name() + ". Punishment: " + punishment.asString());
             if (punishment == Punishment.KICK) {
                 sender.connection.disconnect(Component.translatable("voicemessages.kick.invalid"));
             }
@@ -117,7 +117,7 @@ public final class VoiceMessagesServerNetworking {
         UUID senderUuid = sender.getUUID();
         if (!AVAILABLE_TARGETS.containsEntry(senderUuid, target)) {
             Punishment punishment = VoiceMessages.SERVER_CONFIG.getData().voiceMessageInvalidPunishment();
-            VoiceMessages.getLogger().warn(sender.getGameProfile().getName() + " sent voice message with unknown target. Punishment: " + punishment.asString());
+            VoiceMessages.getLogger().warn(sender.getGameProfile().name() + " sent voice message with unknown target. Punishment: " + punishment.asString());
             switch (punishment) {
                 case KICK:
                     sender.connection.disconnect(Component.translatable("voicemessages.kick.unknown_target"));
@@ -132,12 +132,12 @@ public final class VoiceMessagesServerNetworking {
 
     private static Iterable<ServerPlayer> collectPlayers(ServerPlayer sender, String target) {
         if (VoiceMessages.TARGET_ALL.equals(target)) {
-            return List.copyOf(sender.getServer().getPlayerList().getPlayers());
+            return List.copyOf(sender.level().getServer().getPlayerList().getPlayers());
         }
         if (VoiceMessages.TARGET_TEAM.equals(target)) {
             PlayerTeam team = sender.getTeam();
             if (team != null) {
-                PlayerList playerList = sender.getServer().getPlayerList();
+                PlayerList playerList = sender.level().getServer().getPlayerList();
                 List<ServerPlayer> players = new ArrayList<>();
                 for (String playerUuidStr : team.getPlayers()) {
                     ServerPlayer player = playerList.getPlayer(UUID.fromString(playerUuidStr));
@@ -149,7 +149,7 @@ public final class VoiceMessagesServerNetworking {
             }
             return List.of(sender);
         }
-        ServerPlayer otherPlayer = sender.getServer().getPlayerList().getPlayerByName(target);
+        ServerPlayer otherPlayer = sender.level().getServer().getPlayerList().getPlayerByName(target);
         if (otherPlayer != null && !sender.equals(otherPlayer)) {
             return List.of(sender, otherPlayer);
         }
@@ -214,11 +214,11 @@ public final class VoiceMessagesServerNetworking {
                     targets.add(VoiceMessages.TARGET_TEAM);
                 }
                 if (service.hasVoiceMessageSendPlayersPermission(player)) {
-                    PlayerList playerList = player.getServer().getPlayerList();
+                    PlayerList playerList = player.level().getServer().getPlayerList();
                     for (UUID playerUuid : HAS_COMPATIBLE_VERSION) {
                         ServerPlayer p = playerList.getPlayer(playerUuid);
                         if (p != null) {
-                            targets.add(p.getGameProfile().getName());
+                            targets.add(p.getGameProfile().name());
                         }
                     }
                 }

@@ -98,7 +98,7 @@ public final class VoiceMessagesFabric implements ModInitializer {
             ServerTickEvents.END_SERVER_TICK.register(VoiceMessagesEvents::onServerTick);
 
             ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
-                    VoiceMessagesServerNetworking.onPlayerDisconnected(server, handler.getOwner().getId()));
+                    VoiceMessagesServerNetworking.onPlayerDisconnected(server, handler.getOwner().id()));
         }
     }
 
