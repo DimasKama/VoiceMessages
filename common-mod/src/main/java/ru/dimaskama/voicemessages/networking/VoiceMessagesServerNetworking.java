@@ -165,10 +165,12 @@ public final class VoiceMessagesServerNetworking {
         VoiceMessageEndS2C end = new VoiceMessageEndS2C(senderUuid, displayTarget);
         VoiceMessagesModService service = VoiceMessagesMod.getService();
         for (ServerPlayer player : players) {
-            for (VoiceMessageChunkS2C chunk : chunks) {
-                service.sendToPlayer(player, chunk);
+            if (hasCompatibleVersion(player)) {
+                for (VoiceMessageChunkS2C chunk : chunks) {
+                    service.sendToPlayer(player, chunk);
+                }
+                service.sendToPlayer(player, end);
             }
-            service.sendToPlayer(player, end);
         }
     }
 
