@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -149,7 +150,7 @@ public final class VoiceMessagesPaperNetworking {
             VoiceMessages.getLogger().warn(sender.getName() + " sent voice message chunk without " + VoiceMessages.VOICE_MESSAGE_SEND_PERMISSION + " permission. Punishment: " + punishment.asString());
             switch (punishment) {
                 case KICK:
-                    sender.kickPlayer("Voice messages permission is violated");
+                    sender.kick(Component.text("Voice messages permission is violated"));
                 case PREVENT:
                     return;
             }
@@ -168,7 +169,7 @@ public final class VoiceMessagesPaperNetworking {
                     VoiceMessages.getLogger().warn("Building voice message exceeds the max duration of " + maxDuration + "ms. Punishment: " + punishment.asString());
                     switch (punishment) {
                         case KICK:
-                            sender.kickPlayer("You sent an invalid voice message");
+                            sender.kick(Component.text("You sent an invalid voice message"));
                         case PREVENT:
                             builder.discarded = true;
                             return;
@@ -196,7 +197,7 @@ public final class VoiceMessagesPaperNetworking {
                             VoiceMessages.getLogger().warn("Received voice message with duration (" + duration + "ms) greater than time passed from previous voice message (" + timePassed + "ms). Punishment:" + punishment.asString());
                             switch (punishment) {
                                 case KICK:
-                                    sender.kickPlayer("The length of the sent voice message is longer than the time elapsed since the previous one");
+                                    sender.kick(Component.text("The length of the sent voice message is longer than the time elapsed since the previous one"));
                                 case PREVENT:
                                     return;
                             }
@@ -210,7 +211,7 @@ public final class VoiceMessagesPaperNetworking {
             Punishment punishment = VoiceMessages.SERVER_CONFIG.getData().voiceMessageInvalidPunishment();
             VoiceMessages.getLogger().warn("Received voice message end packet without previous chunks from " + sender.getName() + ". Punishment: " + punishment.asString());
             if (punishment == Punishment.KICK) {
-                sender.kickPlayer("You sent an invalid voice message");
+                sender.kick(Component.text("You sent an invalid voice message"));
             }
         }
     }
@@ -222,7 +223,7 @@ public final class VoiceMessagesPaperNetworking {
             VoiceMessages.getLogger().warn(sender.getName() + " sent voice message with unknown target. Punishment: " + punishment.asString());
             switch (punishment) {
                 case KICK:
-                    sender.kickPlayer("Unknown voice message target");
+                    sender.kick(Component.text("Unknown voice message target"));
                 case PREVENT:
                     return;
             }
@@ -280,10 +281,12 @@ public final class VoiceMessagesPaperNetworking {
         }
         Plugin plugin = VoiceMessagesPaper.getInstance();
         for (Player player : players) {
-            for (byte[] chunk : chunks) {
-                player.sendPluginMessage(plugin, VOICE_MESSAGE_CHUNK_S2C_CHANNEL, chunk);
+            if (hasCompatibleVersion(player)) {
+                for (byte[] chunk : chunks) {
+                    player.sendPluginMessage(plugin, VOICE_MESSAGE_CHUNK_S2C_CHANNEL, chunk);
+                }
+                player.sendPluginMessage(plugin, VOICE_MESSAGE_END_S2C_CHANNEL, end);
             }
-            player.sendPluginMessage(plugin, VOICE_MESSAGE_END_S2C_CHANNEL, end);
         }
     }
 
