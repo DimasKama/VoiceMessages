@@ -45,8 +45,8 @@ repositories {
     // Other repositories
     
     maven {
-        name "KvotheShaed Releases"
-        url "https://maven.kvotheshaed.ru/releases"
+        name "dimaskama"
+        url "https://maven.dimaskama.net/releases"
     }
 }
 
