@@ -1,1 +1,1 @@
-- Fix crash when not all players have mod installed
+- Fix rare crash with Replay Mod
