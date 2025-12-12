@@ -18,7 +18,7 @@ public abstract class OverlayScreen extends Screen {
     @Override
     protected void init() {
         if (firstInit) {
-            parent.init(minecraft, width, height);
+            parent.init(width, height);
             firstInit = false;
         } else {
             ((ScreenAccessor) parent).voicemessages_init();

@@ -1,7 +1,7 @@
 package ru.dimaskama.voicemessages;
 
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ public interface VoiceMessagesModService {
 
     void sendToServer(CustomPacketPayload payload);
 
-    boolean canSendToServer(ResourceLocation payloadId);
+    boolean canSendToServer(Identifier payloadId);
 
     void sendToPlayer(ServerPlayer player, CustomPacketPayload payload);
 

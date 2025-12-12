@@ -1,1 +1,1 @@
-- Fix rare crash with Replay Mod
+- Minecraft 1.21.11 update

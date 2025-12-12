@@ -1,6 +1,6 @@
 package ru.dimaskama.voicemessages;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.dimaskama.voicemessages.logger.AbstractLogger;
@@ -62,8 +62,8 @@ public final class VoiceMessagesMod {
         return service;
     }
 
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(VoiceMessages.ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(VoiceMessages.ID, path);
     }
 
 }

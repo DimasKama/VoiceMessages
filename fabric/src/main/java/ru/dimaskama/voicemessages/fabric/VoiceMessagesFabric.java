@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.networking.v1.*;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesEvents;
@@ -40,7 +40,7 @@ public final class VoiceMessagesFabric implements ModInitializer {
             }
 
             @Override
-            public boolean canSendToServer(ResourceLocation payloadId) {
+            public boolean canSendToServer(Identifier payloadId) {
                 return ClientPlayNetworking.canSend(payloadId);
             }
 

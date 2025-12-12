@@ -1,7 +1,7 @@
 package ru.dimaskama.voicemessages.neoforge;
 
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
@@ -61,7 +61,7 @@ public final class VoiceMessagesNeoForge {
             }
 
             @Override
-            public boolean canSendToServer(ResourceLocation payloadId) {
+            public boolean canSendToServer(Identifier payloadId) {
                 return net.minecraft.client.Minecraft.getInstance().getConnection().hasChannel(payloadId);
             }
 

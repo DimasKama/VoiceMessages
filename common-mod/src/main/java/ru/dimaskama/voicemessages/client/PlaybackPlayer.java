@@ -5,7 +5,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import org.joml.Matrix3x2f;
@@ -16,8 +16,8 @@ import ru.dimaskama.voicemessages.client.render.PlaybackRenderer;
 public class PlaybackPlayer {
 
     private static final int PLAY_BUTTON_SIDE = 10;
-    private static final ResourceLocation PLAY_TEXTURE = VoiceMessagesMod.id("play");
-    private static final ResourceLocation PAUSE_TEXTURE = VoiceMessagesMod.id("pause");
+    private static final Identifier PLAY_TEXTURE = VoiceMessagesMod.id("play");
+    private static final Identifier PAUSE_TEXTURE = VoiceMessagesMod.id("pause");
     private final PlaybackManager playbackManager;
     private final Playback playback;
     private final int backgroundColor;
@@ -67,7 +67,7 @@ public class PlaybackPlayer {
     }
 
     private void renderPlayButton(GuiGraphics guiGraphics) {
-        ResourceLocation id = playback.isPlaying() ? PAUSE_TEXTURE : PLAY_TEXTURE;
+        Identifier id = playback.isPlaying() ? PAUSE_TEXTURE : PLAY_TEXTURE;
         guiGraphics.blitSprite(
                 RenderPipelines.GUI_TEXTURED,
                 id,

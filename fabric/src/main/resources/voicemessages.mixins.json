@@ -5,8 +5,8 @@
   "minVersion": "0.8",
   "client": [
     "client.ChatComponentMixin",
+    "client.ChatGraphicsAccessImplementationsMixin",
     "client.ChatScreenMixin",
-    "client.GuiMessageLineMixin",
     "client.ScreenAccessor",
     "client.MinecraftMixin"
   ],

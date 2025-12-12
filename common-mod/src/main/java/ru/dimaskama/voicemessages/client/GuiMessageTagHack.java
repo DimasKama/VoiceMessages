@@ -4,7 +4,6 @@ import com.mojang.util.UndashedUuid;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.GuiMessageTag;
 import org.jetbrains.annotations.Nullable;
-import ru.dimaskama.voicemessages.duck.client.GuiMessageLineDuck;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +12,7 @@ public final class GuiMessageTagHack {
 
     @Nullable
     public static Playback getPlayback(GuiMessage.Line chatHudLine) {
-        GuiMessageTag tag = ((GuiMessageLineDuck) (Object) chatHudLine).voicemessages_getGuiMessageTag();
+        GuiMessageTag tag = chatHudLine.tag();
         return tag != null ? getPlayback(tag) : null;
     }
 
