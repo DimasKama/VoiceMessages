@@ -3,7 +3,9 @@ plugins {
     id 'maven-publish'
 }
 
-archivesBaseName = archives_base_name
+base {
+    archivesName = archives_base_name
+}
 version = version
 group = maven_group
 
@@ -41,7 +43,7 @@ publishing {
     publications {
         voiceMessagesApi(MavenPublication) {
             artifactId archives_base_name
-            artifact(jar.archivePath) {
+            artifact(jar) {
                 builtBy build
                 classifier null
             }
