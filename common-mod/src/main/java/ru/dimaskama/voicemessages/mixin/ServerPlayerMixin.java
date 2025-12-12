@@ -13,7 +13,7 @@ import ru.dimaskama.voicemessages.VoiceMessagesMod;
 abstract class ServerPlayerMixin extends Player {
 
     private ServerPlayerMixin() {
-        super(null, null, 0.0F, null);
+        super(null, null);
     }
 
     @Inject(method = "doTick", at = @At("TAIL"))

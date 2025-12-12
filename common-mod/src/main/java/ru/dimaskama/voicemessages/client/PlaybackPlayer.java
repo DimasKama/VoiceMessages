@@ -4,11 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import org.joml.Matrix4f;
+import org.joml.Matrix3x2f;
 import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.client.render.PlaybackRenderer;
@@ -55,7 +55,7 @@ public class PlaybackPlayer {
         return this;
     }
 
-    public void transform(Matrix4f matrix) {
+    public void transform(Matrix3x2f matrix) {
         playButtonRectangle = playButtonRectangle.transformAxisAligned(matrix);
         playbackTimeRectangle = playbackTimeRectangle.transformAxisAligned(matrix);
         playbackRectangle = playbackRectangle.transformAxisAligned(matrix);
@@ -69,7 +69,7 @@ public class PlaybackPlayer {
     private void renderPlayButton(GuiGraphics guiGraphics) {
         ResourceLocation id = playback.isPlaying() ? PAUSE_TEXTURE : PLAY_TEXTURE;
         guiGraphics.blitSprite(
-                RenderType::guiTextured,
+                RenderPipelines.GUI_TEXTURED,
                 id,
                 playButtonRectangle.left(),
                 playButtonRectangle.top(),

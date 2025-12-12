@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
@@ -141,11 +142,11 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (super.keyPressed(keyEvent)) {
             return true;
         }
-        if (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_NUMPADENTER) {
+        if (keyEvent.input() == InputConstants.KEY_RETURN || keyEvent.input() == InputConstants.KEY_NUMPADENTER) {
             onClose();
             return true;
         }
@@ -164,8 +165,6 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
 
     @Override
     protected void actualRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0.0F, 0.0F, 150.0F);
         int bottomY = height - fromBottomY;
         guiGraphics.fill(leftX - 1, bottomY - 16, leftX + 243, bottomY + 1, 0xFFFFFFFF);
         guiGraphics.fill(leftX, bottomY - 15, leftX + 242, bottomY, 0xFFFF5555);
@@ -197,7 +196,6 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
         }
 
         super.actualRender(guiGraphics, mouseX, mouseY, delta);
-        guiGraphics.pose().popPose();
     }
 
 }

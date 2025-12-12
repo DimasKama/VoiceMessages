@@ -62,20 +62,20 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
     }
 
     @WrapOperation(
-            method = "render",
+            method = "/method_71991|lambda\\$render\\$1/",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/util/FormattedCharSequence;III)I",
-                    ordinal = 0
+                    target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Lnet/minecraft/util/FormattedCharSequence;III)V"
             )
     )
-    private int wrapRenderLine(GuiGraphics instance, Font font, FormattedCharSequence formattedCharSequence, int x, int y, int color, Operation<Integer> original, @Local GuiMessage.Line line) {
-        int addX = original.call(instance, font, formattedCharSequence, x, y, color);
+    private void wrapRenderLine(GuiGraphics instance, Font font, FormattedCharSequence formattedCharSequence, int x, int y, int color, Operation<Void> original, @Local(argsOnly = true) GuiMessage.Line line) {
+        original.call(instance, font, formattedCharSequence, x, y, color);
         if (VoiceMessagesMod.isActive()) {
             Playback playback = GuiMessageTagHack.getPlayback(line);
             if (playback != null) {
                 double scale = getScale();
                 if (scale >= 0.1) {
+                    int addX = font.width(formattedCharSequence);
                     if (addX > 0) {
                         addX += 4;
                     }
@@ -92,12 +92,11 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
                     );
                     player.setAlpha(ARGB.alpha(color));
                     player.render(instance);
-                    player.transform(instance.pose().last().pose());
+                    player.transform(instance.pose());
                     voicemessages_visiblePlaybackPlayers.add(player);
                 }
             }
         }
-        return addX;
     }
 
     @ModifyExpressionValue(

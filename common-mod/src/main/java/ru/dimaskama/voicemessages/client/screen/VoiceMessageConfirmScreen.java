@@ -7,6 +7,8 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -102,22 +104,19 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
 
     @Override
     protected void actualRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0.0F, 0.0F, 150.0F);
         super.actualRender(guiGraphics, mouseX, mouseY, delta);
         playbackPlayer.render(guiGraphics);
         if (targetText != null) {
             guiGraphics.drawString(font, targetText, targetTextX, targetTextY, 0xFFFFFFFF);
         }
-        guiGraphics.pose().popPose();
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (super.keyPressed(keyEvent)) {
             return true;
         }
-        if (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_NUMPADENTER) {
+        if (keyEvent.input() == InputConstants.KEY_RETURN || keyEvent.input() == InputConstants.KEY_NUMPADENTER) {
             send();
             onClose();
             return true;
@@ -126,11 +125,11 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (playbackPlayer.mouseClicked((int) mouseX, (int) mouseY, button)) {
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean bl) {
+        if (playbackPlayer.mouseClicked((int) mouseButtonEvent.x(), (int) mouseButtonEvent.y(), mouseButtonEvent.button())) {
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(mouseButtonEvent, bl);
     }
 
     @Override
