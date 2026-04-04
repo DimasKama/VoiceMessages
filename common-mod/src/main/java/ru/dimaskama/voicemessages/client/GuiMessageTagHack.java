@@ -1,8 +1,8 @@
 package ru.dimaskama.voicemessages.client;
 
 import com.mojang.util.UndashedUuid;
-import net.minecraft.client.GuiMessage;
-import net.minecraft.client.GuiMessageTag;
+import net.minecraft.client.multiplayer.chat.GuiMessage;
+import net.minecraft.client.multiplayer.chat.GuiMessageTag;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

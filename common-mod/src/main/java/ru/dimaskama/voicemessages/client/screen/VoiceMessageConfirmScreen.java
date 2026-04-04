@@ -2,7 +2,7 @@ package ru.dimaskama.voicemessages.client.screen;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import de.maxhenkel.voicechat.api.opus.OpusEncoder;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -93,8 +93,7 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
     }
 
     @Override
@@ -103,11 +102,11 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
     }
 
     @Override
-    protected void actualRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    protected void actualRender(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         super.actualRender(guiGraphics, mouseX, mouseY, delta);
         playbackPlayer.render(guiGraphics);
         if (targetText != null) {
-            guiGraphics.drawString(font, targetText, targetTextX, targetTextY, 0xFFFFFFFF);
+            guiGraphics.text(font, targetText, targetTextX, targetTextY, 0xFFFFFFFF);
         }
     }
 

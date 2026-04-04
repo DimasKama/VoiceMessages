@@ -56,40 +56,40 @@ public final class VoiceMessagesFabric implements ModInitializer {
 
             @Override
             public boolean hasVoiceMessageSendPermission(ServerPlayer player) {
-                return Permissions.check(player, VoiceMessages.VOICE_MESSAGE_SEND_PERMISSION, 0);
+                return Permissions.check(player, VoiceMessages.VOICE_MESSAGE_SEND_PERMISSION, true);
             }
 
             @Override
             public boolean hasVoiceMessageSendAllPermission(ServerPlayer player) {
-                return Permissions.check(player, VoiceMessages.VOICE_MESSAGE_SEND_ALL_PERMISSION, 0);
+                return Permissions.check(player, VoiceMessages.VOICE_MESSAGE_SEND_ALL_PERMISSION, true);
             }
 
             @Override
             public boolean hasVoiceMessageSendTeamPermission(ServerPlayer player) {
-                return Permissions.check(player, VoiceMessages.VOICE_MESSAGE_SEND_TEAM_PERMISSION, 0);
+                return Permissions.check(player, VoiceMessages.VOICE_MESSAGE_SEND_TEAM_PERMISSION, true);
             }
 
             @Override
             public boolean hasVoiceMessageSendPlayersPermission(ServerPlayer player) {
-                return Permissions.check(player, VoiceMessages.VOICE_MESSAGE_SEND_PLAYERS_PERMISSION, 0);
+                return Permissions.check(player, VoiceMessages.VOICE_MESSAGE_SEND_PLAYERS_PERMISSION, true);
             }
         });
 
         if (VoiceMessagesMod.isActive()) {
-            PayloadTypeRegistry.playS2C().register(VoiceMessagesConfigS2C.TYPE, VoiceMessagesConfigS2C.STREAM_CODEC);
-            PayloadTypeRegistry.playS2C().register(VoiceMessageTargetsS2C.TYPE, VoiceMessageTargetsS2C.STREAM_CODEC);
-            PayloadTypeRegistry.playS2C().register(VoiceMessageChunkS2C.TYPE, VoiceMessageChunkS2C.STREAM_CODEC);
-            PayloadTypeRegistry.playS2C().register(VoiceMessageEndS2C.TYPE, VoiceMessageEndS2C.STREAM_CODEC);
+            PayloadTypeRegistry.clientboundPlay().register(VoiceMessagesConfigS2C.TYPE, VoiceMessagesConfigS2C.STREAM_CODEC);
+            PayloadTypeRegistry.clientboundPlay().register(VoiceMessageTargetsS2C.TYPE, VoiceMessageTargetsS2C.STREAM_CODEC);
+            PayloadTypeRegistry.clientboundPlay().register(VoiceMessageChunkS2C.TYPE, VoiceMessageChunkS2C.STREAM_CODEC);
+            PayloadTypeRegistry.clientboundPlay().register(VoiceMessageEndS2C.TYPE, VoiceMessageEndS2C.STREAM_CODEC);
 
-            PayloadTypeRegistry.playC2S().register(VoiceMessagesVersionC2S.TYPE, VoiceMessagesVersionC2S.STREAM_CODEC);
+            PayloadTypeRegistry.serverboundPlay().register(VoiceMessagesVersionC2S.TYPE, VoiceMessagesVersionC2S.STREAM_CODEC);
             ServerPlayNetworking.registerGlobalReceiver(VoiceMessagesVersionC2S.TYPE, (payload, context) ->
                     VoiceMessagesServerNetworking.onVoiceMessagesVersionReceived(context.player(), payload));
 
-            PayloadTypeRegistry.playC2S().register(VoiceMessageChunkC2S.TYPE, VoiceMessageChunkC2S.STREAM_CODEC);
+            PayloadTypeRegistry.serverboundPlay().register(VoiceMessageChunkC2S.TYPE, VoiceMessageChunkC2S.STREAM_CODEC);
             ServerPlayNetworking.registerGlobalReceiver(VoiceMessageChunkC2S.TYPE, (payload, context) ->
                     VoiceMessagesServerNetworking.onVoiceMessageChunkReceived(context.player(), payload));
 
-            PayloadTypeRegistry.playC2S().register(VoiceMessageEndC2S.TYPE, VoiceMessageEndC2S.STREAM_CODEC);
+            PayloadTypeRegistry.serverboundPlay().register(VoiceMessageEndC2S.TYPE, VoiceMessageEndC2S.STREAM_CODEC);
             ServerPlayNetworking.registerGlobalReceiver(VoiceMessageEndC2S.TYPE, (payload, context) ->
                     VoiceMessagesServerNetworking.onVoiceMessageEndReceived(context.player(), payload));
 

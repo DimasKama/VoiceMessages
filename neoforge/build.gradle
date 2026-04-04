@@ -1,5 +1,5 @@
 plugins {
-    id 'net.neoforged.gradle.userdev' version "${neogradle_version}"
+    id 'net.neoforged.moddev' version "${moddev_version}"
 }
 
 apply plugin: 'com.gradleup.shadow'
@@ -22,5 +22,5 @@ repositories {
 }
 
 dependencies {
-    implementation "maven.modrinth:simple-voice-chat:neoforge-${minecraft_version}-${voicechat_mod_version}"
+    implementation "maven.modrinth:simple-voice-chat:neoforge-${voicechat_mod_version}+${minecraft_version}"
 }

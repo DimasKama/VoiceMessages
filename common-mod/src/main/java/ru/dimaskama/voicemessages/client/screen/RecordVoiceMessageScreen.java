@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;
 import it.unimi.dsi.fastutil.floats.FloatLists;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.WidgetSprites;
@@ -118,8 +118,8 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
         super.tick();
         if (microphoneException != null) {
             VoiceMessages.getLogger().warn("Microphone error", microphoneException);
-            minecraft.player.displayClientMessage(Component.translatable("voicemessages.microphone_error", microphoneException.getLocalizedMessage())
-                    .withStyle(ChatFormatting.RED), true);
+            minecraft.player.sendOverlayMessage(Component.translatable("voicemessages.microphone_error", microphoneException.getLocalizedMessage())
+                    .withStyle(ChatFormatting.RED));
             minecraft.setScreen(null);
         } else if (recorded) {
             onClose();
@@ -159,12 +159,12 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
 
     }
 
     @Override
-    protected void actualRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    protected void actualRender(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         int bottomY = height - fromBottomY;
         guiGraphics.fill(leftX - 1, bottomY - 16, leftX + 243, bottomY + 1, 0xFFFFFFFF);
         guiGraphics.fill(leftX, bottomY - 15, leftX + 242, bottomY, 0xFFFF5555);
@@ -185,14 +185,14 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
         String timeStr = PlaybackPlayer.formatTime((int) (recordProgress * maxDuration))
                 + '/'
                 + PlaybackPlayer.formatTime(maxDuration);
-        guiGraphics.drawString(font, timeStr, leftX + 247, bottomY - 12, 0xFFFFFFFF);
+        guiGraphics.text(font, timeStr, leftX + 247, bottomY - 12, 0xFFFFFFFF);
         int timeStrWidth = font.width(timeStr);
 
         doneButton.setPosition(leftX + 247 + timeStrWidth + 5, bottomY - 15);
         cancelButton.setPosition(leftX + 247 + timeStrWidth + 21, bottomY - 15);
 
         if (targetText != null) {
-            guiGraphics.drawString(font, targetText, leftX + 247 + timeStrWidth + 40, bottomY - 12, 0xFFFFFFFF);
+            guiGraphics.text(font, targetText, leftX + 247 + timeStrWidth + 40, bottomY - 12, 0xFFFFFFFF);
         }
 
         super.actualRender(guiGraphics, mouseX, mouseY, delta);

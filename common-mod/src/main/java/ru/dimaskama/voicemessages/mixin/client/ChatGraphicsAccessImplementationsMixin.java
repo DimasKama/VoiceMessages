@@ -1,9 +1,9 @@
 package ru.dimaskama.voicemessages.mixin.client;
 
-import net.minecraft.client.GuiMessageTag;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.multiplayer.chat.GuiMessageTag;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import org.spongepowered.asm.mixin.Final;
@@ -29,7 +29,7 @@ abstract class ChatGraphicsAccessImplementationsMixin {
 
     @Shadow(remap = false, aliases = {"graphics", "field_64427", "field_63876"})
     @Final
-    private GuiGraphics graphics;
+    private GuiGraphicsExtractor graphics;
     @Unique
     private FormattedCharSequence voicemessages_lastText;
 

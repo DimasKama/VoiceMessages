@@ -2,8 +2,8 @@ package ru.dimaskama.voicemessages.fabric.client;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -38,10 +38,10 @@ public final class VoiceMessagesFabricClient implements ClientModInitializer {
 
             ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
                 LiteralCommandNode<FabricClientCommandSource> command = dispatcher.register(new VoicemsgCommand<>(
-                        ClientCommandManager::literal,
-                        ClientCommandManager::argument
+                        ClientCommands::literal,
+                        ClientCommands::argument
                 ).createCommand());
-                dispatcher.register(ClientCommandManager.literal(VoicemsgCommand.ALIAS)
+                dispatcher.register(ClientCommands.literal(VoicemsgCommand.ALIAS)
                         .executes(command.getCommand())
                         .redirect(command));
             });

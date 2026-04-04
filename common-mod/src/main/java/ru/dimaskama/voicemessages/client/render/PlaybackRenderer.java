@@ -1,19 +1,19 @@
 package ru.dimaskama.voicemessages.client.render;
 
 import it.unimi.dsi.fastutil.floats.FloatList;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import ru.dimaskama.voicemessages.client.Playback;
 
 public final class PlaybackRenderer {
 
-    public static void renderPlayback(GuiGraphics guiGraphics, int x, int y, int width, int height, int alpha, Playback playback) {
+    public static void renderPlayback(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int alpha, Playback playback) {
         FloatList audioLevels = playback.getAudioLevels();
         renderPlayback(guiGraphics, x, y, width, height, alpha, playback.getProgress(), audioLevels.size(), audioLevels);
     }
 
-    public static void renderPlayback(GuiGraphics guiGraphics, int x, int y, int width, int height, int alpha, float progress, int frameCount, FloatList audioLevels) {
+    public static void renderPlayback(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int alpha, float progress, int frameCount, FloatList audioLevels) {
         int audioLevelsSize = audioLevels.size();
         for (int i = 0; i < width; i++) {
             boolean isOdd = (i & 1) != 0;

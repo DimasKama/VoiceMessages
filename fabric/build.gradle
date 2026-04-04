@@ -1,4 +1,4 @@
-apply plugin: 'fabric-loom'
+apply plugin: 'net.fabricmc.fabric-loom'
 apply plugin: 'com.gradleup.shadow'
 apply plugin: 'com.modrinth.minotaur'
 
@@ -27,9 +27,9 @@ repositories {
 }
 
 dependencies {
-    modImplementation "maven.modrinth:simple-voice-chat:fabric-${minecraft_version}-${voicechat_mod_version}"
+    implementation "maven.modrinth:simple-voice-chat:fabric-${voicechat_mod_version}+${minecraft_version}"
 
-    include(modImplementation("me.lucko:fabric-permissions-api:${fabric_permissions_api_version}"))
+    include(implementation("me.lucko:fabric-permissions-api:${fabric_permissions_api_version}"))
 }
 
 loom {

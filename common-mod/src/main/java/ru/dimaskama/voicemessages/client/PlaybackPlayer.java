@@ -2,7 +2,7 @@ package ru.dimaskama.voicemessages.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -61,12 +61,12 @@ public class PlaybackPlayer {
         playbackRectangle = playbackRectangle.transformAxisAligned(matrix);
     }
 
-    public void render(GuiGraphics guiGraphics) {
+    public void render(GuiGraphicsExtractor guiGraphics) {
         renderPlayButton(guiGraphics);
         renderPlayback(guiGraphics);
     }
 
-    private void renderPlayButton(GuiGraphics guiGraphics) {
+    private void renderPlayButton(GuiGraphicsExtractor guiGraphics) {
         Identifier id = playback.isPlaying() ? PAUSE_TEXTURE : PLAY_TEXTURE;
         guiGraphics.blitSprite(
                 RenderPipelines.GUI_TEXTURED,
@@ -79,7 +79,7 @@ public class PlaybackPlayer {
         );
     }
 
-    private void renderPlayback(GuiGraphics guiGraphics) {
+    private void renderPlayback(GuiGraphicsExtractor guiGraphics) {
         String timeStr = getTimeString();
         Font font = Minecraft.getInstance().font;
         int timeStrWidth = font.width(timeStr);
@@ -102,7 +102,7 @@ public class PlaybackPlayer {
             playbackRectangle = new ScreenRectangle(0, 0, 0, 0);
         }
         if (renderTimeStr) {
-            guiGraphics.drawString(
+            guiGraphics.text(
                     font,
                     timeStr,
                     playbackTimeRectangle.right() - timeStrWidth,

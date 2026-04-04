@@ -1,6 +1,6 @@
 package ru.dimaskama.voicemessages.client.screen;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import ru.dimaskama.voicemessages.mixin.client.ScreenAccessor;
@@ -45,13 +45,13 @@ public abstract class OverlayScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        parent.render(guiGraphics, mouseX, mouseY, delta);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+        parent.extractRenderState(guiGraphics, mouseX, mouseY, delta);
         actualRender(guiGraphics, mouseX, mouseY, delta);
     }
 
-    protected void actualRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        super.render(guiGraphics, mouseX, mouseY, delta);
+    protected void actualRender(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, delta);
     }
 
     @Override

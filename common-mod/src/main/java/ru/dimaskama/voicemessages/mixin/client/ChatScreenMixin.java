@@ -100,7 +100,7 @@ abstract class ChatScreenMixin extends Screen {
         }
     }
 
-    @Inject(method = "render", at = @At("HEAD"))
+    @Inject(method = "extractRenderState", at = @At("HEAD"))
     private void renderHead(CallbackInfo ci) {
         if (VoiceMessagesMod.isActive()) {
             // Always focus on chat input field
@@ -111,10 +111,10 @@ abstract class ChatScreenMixin extends Screen {
     }
 
     @ModifyArg(
-            method = "render",
+            method = "extractRenderState",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/GuiGraphics;fill(IIIII)V"
+                    target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fill(IIIII)V"
             ),
             index = 0
     )

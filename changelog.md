@@ -1,1 +1,1 @@
-- Minecraft 1.21.11 update
+- Minecraft 26.1.1 update
