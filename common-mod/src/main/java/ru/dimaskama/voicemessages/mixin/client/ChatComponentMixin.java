@@ -35,7 +35,7 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
     @ModifyReturnValue(method = "isChatFocused", at = @At("TAIL"))
     private boolean modifyChatFocused(boolean original) {
         if (VoiceMessagesMod.isActive()) {
-            return original || minecraft.screen instanceof OverlayScreen overlayScreen && overlayScreen.parent instanceof ChatScreen;
+            return original || minecraft.gui.screen() instanceof OverlayScreen overlayScreen && overlayScreen.parent instanceof ChatScreen;
         }
         return false;
     }

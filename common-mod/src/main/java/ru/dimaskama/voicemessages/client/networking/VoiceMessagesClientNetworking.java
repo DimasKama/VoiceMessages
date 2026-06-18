@@ -87,7 +87,7 @@ public final class VoiceMessagesClientNetworking {
                                     .append(" → ")
                                     .append(targetName);
                         }
-                        minecraft.gui.getChat().addPlayerMessage(text, null, GuiMessageTagHack.createAndAdd(audio));
+                        minecraft.gui.hud.getChat().addPlayerMessage(text, null, GuiMessageTagHack.createAndAdd(audio));
                     });
                     builder.close();
                 }

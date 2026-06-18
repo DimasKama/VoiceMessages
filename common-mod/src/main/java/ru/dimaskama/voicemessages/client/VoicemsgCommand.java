@@ -60,8 +60,8 @@ public final class VoicemsgCommand<S> {
 
     private static int startRecordingVoiceMessage(String target) {
         Minecraft minecraft = Minecraft.getInstance();
-        Screen screen = minecraft.screen;
-        minecraft.schedule(() -> minecraft.setScreen(new RecordVoiceMessageScreen(
+        Screen screen = minecraft.gui.screen();
+        minecraft.schedule(() -> minecraft.gui.setScreen(new RecordVoiceMessageScreen(
                 screen instanceof ChatScreen ? screen : new ChatScreen("", false),
                 1,
                 15,

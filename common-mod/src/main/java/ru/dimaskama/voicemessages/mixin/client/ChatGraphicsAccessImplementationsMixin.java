@@ -65,7 +65,7 @@ abstract class ChatGraphicsAccessImplementationsMixin {
                     player.setAlpha(ARGB.as8BitChannel(alpha));
                     player.render(graphics);
                     player.transform(graphics.pose());
-                    ((ChatComponentDuck) Minecraft.getInstance().gui.getChat()).voicemessages_getVisiblePlaybackPlayers().add(player);
+                    ((ChatComponentDuck) Minecraft.getInstance().gui.hud.getChat()).voicemessages_getVisiblePlaybackPlayers().add(player);
                 }
             }
         }

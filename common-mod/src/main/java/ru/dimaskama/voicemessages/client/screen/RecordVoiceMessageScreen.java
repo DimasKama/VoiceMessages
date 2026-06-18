@@ -82,7 +82,7 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
                 14,
                 14,
                 CANCEL_SPRITES,
-                button -> minecraft.setScreen(parent),
+                button -> minecraft.gui.setScreen(parent),
                 CommonComponents.EMPTY
         ));
         cancelButton.setTooltip(Tooltip.create(CommonComponents.GUI_CANCEL));
@@ -120,7 +120,7 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
             VoiceMessages.getLogger().warn("Microphone error", microphoneException);
             minecraft.player.sendOverlayMessage(Component.translatable("voicemessages.microphone_error", microphoneException.getLocalizedMessage())
                     .withStyle(ChatFormatting.RED));
-            minecraft.setScreen(null);
+            minecraft.gui.setScreen(null);
         } else if (recorded) {
             onClose();
         }
@@ -131,7 +131,7 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
         if (recordedFrames.isEmpty()) {
             super.onClose();
         } else {
-            minecraft.setScreen(new VoiceMessageConfirmScreen(parent, leftX, fromBottomY, recordedFrames, target));
+            minecraft.gui.setScreen(new VoiceMessageConfirmScreen(parent, leftX, fromBottomY, recordedFrames, target));
         }
     }
 

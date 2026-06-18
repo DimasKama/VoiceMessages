@@ -9,7 +9,7 @@ import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.resources.language.I18n;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
@@ -140,7 +140,8 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
 
     public static Component getTargetText(String target) {
         String key = "voicemessages.target." + target;
-        return Component.literal(I18n.exists(key) ? I18n.get(key) : target);
+        Language language = Language.getInstance();
+        return Component.literal(language.has(key) ? language.getOrDefault(key) : target);
     }
 
     @Nullable

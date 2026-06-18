@@ -71,9 +71,9 @@ abstract class ChatScreenMixin extends Screen {
                         14,
                         14,
                         voicemessages_WIDGET_SPRITES,
-                        button -> minecraft.setScreen(new RecordVoiceMessageScreen(this, button.getX(), height - button.getY() + 1, target))
+                        button -> minecraft.gui.setScreen(new RecordVoiceMessageScreen(this, button.getX(), height - button.getY() + 1, target))
                 ));
-                if (minecraft.screen == this) {
+                if (minecraft.gui.screen() == this) {
                     voicemessages_button.setTooltip(Tooltip.create(
                             VoiceMessages.TARGET_ALL.equals(target)
                                     ? Component.translatable("voicemessages.voice_message")
@@ -91,7 +91,7 @@ abstract class ChatScreenMixin extends Screen {
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     private void mouseClickedHead(MouseButtonEvent mouseButtonEvent, boolean bl, CallbackInfoReturnable<Boolean> cir) {
         if (VoiceMessagesMod.isActive()) {
-            for (PlaybackPlayer player : ((ChatComponentDuck) minecraft.gui.getChat()).voicemessages_getVisiblePlaybackPlayers()) {
+            for (PlaybackPlayer player : ((ChatComponentDuck) minecraft.gui.hud.getChat()).voicemessages_getVisiblePlaybackPlayers()) {
                 if (player.mouseClicked((int) mouseButtonEvent.x(), (int) mouseButtonEvent.y(), mouseButtonEvent.button())) {
                     cir.setReturnValue(true);
                     return;
