@@ -31,9 +31,3 @@ dependencies {
 
     include(implementation("me.lucko:fabric-permissions-api:${fabric_permissions_api_version}"))
 }
-
-loom {
-    mixin {
-        add("main")
-    }
-}

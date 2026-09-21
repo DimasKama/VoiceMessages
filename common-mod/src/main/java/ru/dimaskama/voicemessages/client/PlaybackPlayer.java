@@ -1,5 +1,6 @@
 package ru.dimaskama.voicemessages.client;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -117,7 +118,7 @@ public class PlaybackPlayer {
     }
 
     public boolean mouseClicked(int mouseX, int mouseY, int button) {
-        if (button == 0) {
+        if (button == InputConstants.MOUSE_BUTTON_LEFT) {
             if (playbackRectangle.containsPoint(mouseX, mouseY)) {
                 float delta = Mth.inverseLerp(mouseX, playbackRectangle.left(), playbackRectangle.right());
                 if (delta >= 0.0F && delta <= 1.0F) {

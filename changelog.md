@@ -1,1 +1,1 @@
-- Minecraft 26.2 update
+- Minecraft 26.3 update
