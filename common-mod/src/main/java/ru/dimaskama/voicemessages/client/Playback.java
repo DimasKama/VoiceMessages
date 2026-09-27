@@ -17,8 +17,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Playback {
 
-    private static final ScheduledExecutorService SOUND_PLAYER_EXECUTOR = Executors.newSingleThreadScheduledExecutor(r ->
-            new Thread(r, "VoiceMessagesPlayer"));
+    private static final ScheduledExecutorService SOUND_PLAYER_EXECUTOR = Executors.newSingleThreadScheduledExecutor(r -> {
+        Thread thread = new Thread(r, "VoiceMessagesPlayer");
+        thread.setDaemon(true);
+        return thread;
+    });
     private final ClientAudioChannel channel;
     private final List<short[]> audio;
     private final FloatList audioLevels;
