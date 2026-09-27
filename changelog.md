@@ -1,1 +1,1 @@
-- Minecraft 26.1.1 update
+- Fix playback thread pool creating non-daemon threads
