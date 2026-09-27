@@ -1,1 +1,1 @@
-- Fix rare crash with Replay Mod
+- Fix playback thread pool creating non-daemon threads
