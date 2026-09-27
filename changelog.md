@@ -1,1 +1,1 @@
-- Minecraft 1.21.11 update
+- Fix playback thread pool creating non-daemon threads
