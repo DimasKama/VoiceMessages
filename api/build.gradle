@@ -9,6 +9,10 @@ base {
 version = version
 group = maven_group
 
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(java_toolchain_version)
+}
+
 repositories {
 
 }
