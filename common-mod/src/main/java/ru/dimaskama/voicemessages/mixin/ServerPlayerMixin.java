@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import ru.dimaskama.voicemessages.VoiceMessagesEvents;
-import ru.dimaskama.voicemessages.VoiceMessagesMod;
 
 @Mixin(ServerPlayer.class)
 abstract class ServerPlayerMixin extends Player {
@@ -18,7 +17,7 @@ abstract class ServerPlayerMixin extends Player {
 
     @Inject(method = "doTick", at = @At("TAIL"))
     private void doTickTail(CallbackInfo ci) {
-        if (VoiceMessagesMod.isActive() && tickCount == 15) {
+        if (tickCount == 15) {
             VoiceMessagesEvents.checkForCompatibleVersion((ServerPlayer) (Object) this);
         }
     }

@@ -11,16 +11,12 @@ import ru.dimaskama.voicemessages.networking.VoiceMessagesServerNetworking;
 public final class VoiceMessagesEvents {
 
     public static void onServerStarted(MinecraftServer server) {
-        if (VoiceMessagesMod.isActive()) {
-            VoiceMessages.SERVER_CONFIG.loadOrCreate();
-            VoiceMessagesApiInitCallback.EVENT.invoker().setVoiceMessagesApi(new VoiceMessagesApiImpl(server));
-        }
+        VoiceMessages.SERVER_CONFIG.loadOrCreate();
+        VoiceMessagesApiInitCallback.EVENT.invoker().setVoiceMessagesApi(new VoiceMessagesApiImpl(server));
     }
 
     public static void onServerTick(MinecraftServer server) {
-        if (VoiceMessagesMod.isActive()) {
-            VoiceMessagesServerNetworking.tickBuildingVoiceMessages();
-        }
+        VoiceMessagesServerNetworking.tickBuildingVoiceMessages();
     }
 
     public static void checkForCompatibleVersion(ServerPlayer player) {

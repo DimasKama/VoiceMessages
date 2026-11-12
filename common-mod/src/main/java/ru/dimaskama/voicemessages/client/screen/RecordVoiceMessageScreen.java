@@ -20,6 +20,7 @@ import ru.dimaskama.voicemessages.VoiceMessagesModService;
 import ru.dimaskama.voicemessages.client.Playback;
 import ru.dimaskama.voicemessages.client.PlaybackManager;
 import ru.dimaskama.voicemessages.client.PlaybackPlayer;
+import ru.dimaskama.voicemessages.client.backend.VoiceBackends;
 import ru.dimaskama.voicemessages.client.networking.VoiceMessagesClientNetworking;
 import ru.dimaskama.voicemessages.client.render.PlaybackRenderer;
 
@@ -62,7 +63,7 @@ public class RecordVoiceMessageScreen extends OverlayScreen {
         super.init();
         PlaybackManager.MAIN.stopPlaying();
         if (!recorded && recordThread == null) {
-            recordThread = VoiceMessagesMod.getService().createVoiceRecordThread(this::appendFrame, e -> microphoneException = e);
+            recordThread = VoiceBackends.get().createRecorder(this::appendFrame, e -> microphoneException = e);
             recordThread.startVoiceRecord();
         }
         doneButton = addRenderableWidget(new ImageButton(
