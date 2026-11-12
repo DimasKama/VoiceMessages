@@ -13,7 +13,7 @@ abstract class MinecraftMixin {
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V", at = @At("TAIL"))
     private void onDisconnect(CallbackInfo ci) {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             VoiceMessagesClientNetworking.resetConfig();
         }
     }

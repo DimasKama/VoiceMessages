@@ -7,13 +7,15 @@ import ru.dimaskama.voicemessages.logger.AbstractLogger;
 
 public final class VoiceMessagesMod {
 
+    public static final String SIMPLE_VOICE_CHAT_ID = "voicechat";
+    public static final String PLASMO_VOICE_ID = "plasmovoice";
     private static String modVersion;
     private static VoiceMessagesModService service;
-    private static boolean active;
+    private static boolean clientActive;
 
     public static void init(String modVersion, VoiceMessagesModService service) {
         VoiceMessagesMod.service = service;
-        active = service.isModLoaded("voicechat");
+        clientActive = service.isModLoaded(SIMPLE_VOICE_CHAT_ID) || service.isModLoaded(PLASMO_VOICE_ID);
         Logger logger = LoggerFactory.getLogger(VoiceMessages.NAME);
         VoiceMessagesMod.modVersion = modVersion;
         VoiceMessages.init(VoiceMessages.getVersionFromModVersion(modVersion), new AbstractLogger() {
@@ -49,9 +51,11 @@ public final class VoiceMessagesMod {
         });
     }
 
-    // To remove voicechat crash-dependency, we check this method in every mod feature. If voicechat is not loaded, it returns false
-    public static boolean isActive() {
-        return active;
+    // The server side works without any voice mod, it only relays encoded audio.
+    // Client features need Simple Voice Chat or Plasmo Voice for the microphone, playback and Opus,
+    // so every client feature checks this method. If neither of them is loaded, it returns false
+    public static boolean isClientActive() {
+        return clientActive;
     }
 
     public static String getModVersion() {

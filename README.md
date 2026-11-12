@@ -1,13 +1,21 @@
 # Voice messages
 Mod and plugin that adds voice messages to the Minecraft. <p>
-Requires [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) installed.
+Requires [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) **or** [Plasmo Voice](https://modrinth.com/plugin/plasmo-voice) installed on the client.
+The server does not need any voice mod.
 
 ![preview gif](images/preview.gif)
 
 ## Good to know
 This mod must be installed both on server and client to work. If a player does not have this mod installed, he will not see voice messages. <p>
-This mod uses the microphone configured in Simple Voice Chat with all its settings. So make sure that `Voice Amplification` in Simple Voice Chat settings is not set to `-100%`. <p>
-Also, if voicechat sounds are disabled, you will not hear voice messages.
+This mod uses the microphone configured in the installed voice mod with all its settings. <p>
+If both Simple Voice Chat and Plasmo Voice are installed, the one used on the current server is chosen automatically
+(Simple Voice Chat, if the server has none of them). <p>
+
+With Simple Voice Chat, make sure that `Voice Amplification` in Simple Voice Chat settings is not set to `-100%`.
+Also, if voicechat sounds are disabled, you will not hear voice messages. <p>
+With Plasmo Voice, voice messages use its microphone, output device and volume settings.
+If voice chat is disabled in Plasmo Voice, you will not hear voice messages.
+While recording a voice message, your voice is not transmitted to the voice chat.
 
 ## Private voice messages
 

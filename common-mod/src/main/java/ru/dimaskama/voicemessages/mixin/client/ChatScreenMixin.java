@@ -49,7 +49,7 @@ abstract class ChatScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void initTail(CallbackInfo ci) {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             List<String> availableTargets = VoiceMessagesClientNetworking.getAvailableTargets();
             String target;
             voicemessages_canSendVoiceMessages = false;
@@ -90,7 +90,7 @@ abstract class ChatScreenMixin extends Screen {
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     private void mouseClickedHead(MouseButtonEvent mouseButtonEvent, boolean bl, CallbackInfoReturnable<Boolean> cir) {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             for (PlaybackPlayer player : ((ChatComponentDuck) minecraft.gui.getChat()).voicemessages_getVisiblePlaybackPlayers()) {
                 if (player.mouseClicked((int) mouseButtonEvent.x(), (int) mouseButtonEvent.y(), mouseButtonEvent.button())) {
                     cir.setReturnValue(true);
@@ -102,7 +102,7 @@ abstract class ChatScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At("HEAD"))
     private void renderHead(CallbackInfo ci) {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             // Always focus on chat input field
             if (getFocused() == voicemessages_button) {
                 setFocused(input);
@@ -119,7 +119,7 @@ abstract class ChatScreenMixin extends Screen {
             index = 0
     )
     private int modifyChatFieldBackgroundX(int x1) {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             return voicemessages_canSendVoiceMessages ? x1 + 14 : x1;
         }
         return x1;
