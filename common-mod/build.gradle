@@ -5,8 +5,20 @@ apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mo
 
 repositories {
     maven { url = 'https://maven.maxhenkel.de/repository/public' }
+    exclusiveContent {
+        forRepository {
+            maven {
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 dependencies {
     implementation "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
+    // Plasmo Voice API is bundled in the mod jar (identical for all loaders)
+    compileOnly "maven.modrinth:plasmo-voice:fabric-${plasmovoice_minecraft_version}-${plasmovoice_version}"
 }

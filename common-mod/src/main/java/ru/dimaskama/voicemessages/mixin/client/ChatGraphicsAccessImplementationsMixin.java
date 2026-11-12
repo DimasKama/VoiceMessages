@@ -40,7 +40,7 @@ abstract class ChatGraphicsAccessImplementationsMixin {
 
     @Inject(method = "handleTag", at = @At("TAIL"))
     private void handleTagTail(int x1, int y1, int x2, int y2, float alpha, GuiMessageTag tag, CallbackInfo ci) {
-        if (VoiceMessagesMod.isActive() && voicemessages_lastText != null) {
+        if (VoiceMessagesMod.isClientActive() && voicemessages_lastText != null) {
             int y = y1;
             int x = x2 + 2;
             Playback playback = GuiMessageTagHack.getPlayback(tag);

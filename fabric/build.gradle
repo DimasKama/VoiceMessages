@@ -28,6 +28,9 @@ repositories {
 
 dependencies {
     implementation "maven.modrinth:simple-voice-chat:fabric-${voicechat_mod_version}+${minecraft_version}"
+    // Common sources are compiled in this module too, including the test source set
+    compileOnly "maven.modrinth:plasmo-voice:fabric-${plasmovoice_minecraft_version}-${plasmovoice_version}"
+    testCompileOnly "maven.modrinth:plasmo-voice:fabric-${plasmovoice_minecraft_version}-${plasmovoice_version}"
 
     include(implementation("me.lucko:fabric-permissions-api:${fabric_permissions_api_version}"))
 }

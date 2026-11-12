@@ -30,7 +30,7 @@ public class PlaybackManager {
     public UUID addFromChat(List<short[]> audio) {
         Playback playback = new Playback(audio);
         addFromChat(playback);
-        return playback.getChannel().getId();
+        return playback.getId();
     }
 
     public void addFromChat(Playback playback) {
@@ -45,11 +45,11 @@ public class PlaybackManager {
     }
 
     public void add(Playback playback) {
-        playbacks.put(playback.getChannel().getId(), playback);
+        playbacks.put(playback.getId(), playback);
     }
 
     public void remove(Playback playback) {
-        playbacks.remove(playback.getChannel().getId());
+        playbacks.remove(playback.getId());
     }
 
     public void play(Playback playback) {
