@@ -16,6 +16,8 @@ import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesEvents;
 import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.VoiceMessagesModService;
+import ru.dimaskama.voicemessages.client.backend.VoiceBackend;
+import ru.dimaskama.voicemessages.fabric.client.FabricVoiceChatOfflineOutput;
 import ru.dimaskama.voicemessages.fabric.client.FabricVoiceRecordThread;
 import ru.dimaskama.voicemessages.networking.*;
 
@@ -55,6 +57,11 @@ public final class VoiceMessagesFabric implements ModInitializer {
             }
 
             @Override
+            public VoiceBackend.AudioOutput createVoiceChatOfflineOutput() {
+                return new FabricVoiceChatOfflineOutput();
+            }
+
+            @Override
             public boolean hasVoiceMessageSendPermission(ServerPlayer player) {
                 return Permissions.check(player, VoiceMessages.VOICE_MESSAGE_SEND_PERMISSION, true);
             }
@@ -75,31 +82,29 @@ public final class VoiceMessagesFabric implements ModInitializer {
             }
         });
 
-        if (VoiceMessagesMod.isActive()) {
-            PayloadTypeRegistry.clientboundPlay().register(VoiceMessagesConfigS2C.TYPE, VoiceMessagesConfigS2C.STREAM_CODEC);
-            PayloadTypeRegistry.clientboundPlay().register(VoiceMessageTargetsS2C.TYPE, VoiceMessageTargetsS2C.STREAM_CODEC);
-            PayloadTypeRegistry.clientboundPlay().register(VoiceMessageChunkS2C.TYPE, VoiceMessageChunkS2C.STREAM_CODEC);
-            PayloadTypeRegistry.clientboundPlay().register(VoiceMessageEndS2C.TYPE, VoiceMessageEndS2C.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(VoiceMessagesConfigS2C.TYPE, VoiceMessagesConfigS2C.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(VoiceMessageTargetsS2C.TYPE, VoiceMessageTargetsS2C.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(VoiceMessageChunkS2C.TYPE, VoiceMessageChunkS2C.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(VoiceMessageEndS2C.TYPE, VoiceMessageEndS2C.STREAM_CODEC);
 
-            PayloadTypeRegistry.serverboundPlay().register(VoiceMessagesVersionC2S.TYPE, VoiceMessagesVersionC2S.STREAM_CODEC);
-            ServerPlayNetworking.registerGlobalReceiver(VoiceMessagesVersionC2S.TYPE, (payload, context) ->
-                    VoiceMessagesServerNetworking.onVoiceMessagesVersionReceived(context.player(), payload));
+        PayloadTypeRegistry.serverboundPlay().register(VoiceMessagesVersionC2S.TYPE, VoiceMessagesVersionC2S.STREAM_CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(VoiceMessagesVersionC2S.TYPE, (payload, context) ->
+                VoiceMessagesServerNetworking.onVoiceMessagesVersionReceived(context.player(), payload));
 
-            PayloadTypeRegistry.serverboundPlay().register(VoiceMessageChunkC2S.TYPE, VoiceMessageChunkC2S.STREAM_CODEC);
-            ServerPlayNetworking.registerGlobalReceiver(VoiceMessageChunkC2S.TYPE, (payload, context) ->
-                    VoiceMessagesServerNetworking.onVoiceMessageChunkReceived(context.player(), payload));
+        PayloadTypeRegistry.serverboundPlay().register(VoiceMessageChunkC2S.TYPE, VoiceMessageChunkC2S.STREAM_CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(VoiceMessageChunkC2S.TYPE, (payload, context) ->
+                VoiceMessagesServerNetworking.onVoiceMessageChunkReceived(context.player(), payload));
 
-            PayloadTypeRegistry.serverboundPlay().register(VoiceMessageEndC2S.TYPE, VoiceMessageEndC2S.STREAM_CODEC);
-            ServerPlayNetworking.registerGlobalReceiver(VoiceMessageEndC2S.TYPE, (payload, context) ->
-                    VoiceMessagesServerNetworking.onVoiceMessageEndReceived(context.player(), payload));
+        PayloadTypeRegistry.serverboundPlay().register(VoiceMessageEndC2S.TYPE, VoiceMessageEndC2S.STREAM_CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(VoiceMessageEndC2S.TYPE, (payload, context) ->
+                VoiceMessagesServerNetworking.onVoiceMessageEndReceived(context.player(), payload));
 
-            ServerLifecycleEvents.SERVER_STARTED.register(VoiceMessagesEvents::onServerStarted);
+        ServerLifecycleEvents.SERVER_STARTED.register(VoiceMessagesEvents::onServerStarted);
 
-            ServerTickEvents.END_SERVER_TICK.register(VoiceMessagesEvents::onServerTick);
+        ServerTickEvents.END_SERVER_TICK.register(VoiceMessagesEvents::onServerTick);
 
-            ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
-                    VoiceMessagesServerNetworking.onPlayerDisconnected(server, handler.getOwner().id()));
-        }
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
+                VoiceMessagesServerNetworking.onPlayerDisconnected(server, handler.getOwner().id()));
     }
 
 }

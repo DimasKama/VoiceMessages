@@ -1,20 +1,19 @@
 package ru.dimaskama.voicemessages;
 
-import com.google.common.collect.ImmutableList;
 import de.maxhenkel.voicechat.api.*;
+import de.maxhenkel.voicechat.api.events.ClientVoicechatConnectionEvent;
 import de.maxhenkel.voicechat.api.events.ClientVoicechatInitializationEvent;
 import de.maxhenkel.voicechat.api.events.EventRegistration;
-import de.maxhenkel.voicechat.api.opus.OpusDecoder;
-import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 
-import java.util.List;
-
+// Simple Voice Chat plugin. Loaded only by Simple Voice Chat
 @ForgeVoicechatPlugin
 public class VoiceMessagesPlugin implements VoicechatPlugin {
 
+    public static final String VOLUME_CATEGORY_ID = "voice_messages";
+    private static VoicechatApi api;
     private static VoicechatClientApi clientApi;
-    private static OpusEncoder clientOpusEncoder;
     private static VolumeCategory volumeCategory;
+    private static volatile boolean clientConnected;
 
     @Override
     public String getPluginId() {
@@ -23,9 +22,9 @@ public class VoiceMessagesPlugin implements VoicechatPlugin {
 
     @Override
     public void initialize(VoicechatApi api) {
-        clientOpusEncoder = api.createEncoder();
+        VoiceMessagesPlugin.api = api;
         volumeCategory = api.volumeCategoryBuilder()
-                .setId("voice_messages")
+                .setId(VOLUME_CATEGORY_ID)
                 .setName("Voice Messages")
                 .setDescription("Chat voice messages volume amplifier")
                 .build();
@@ -34,6 +33,7 @@ public class VoiceMessagesPlugin implements VoicechatPlugin {
     @Override
     public void registerEvents(EventRegistration registration) {
         registration.registerEvent(ClientVoicechatInitializationEvent.class, this::onClientVoicechatInitialization);
+        registration.registerEvent(ClientVoicechatConnectionEvent.class, this::onClientVoicechatConnection);
     }
 
     private void onClientVoicechatInitialization(ClientVoicechatInitializationEvent event) {
@@ -41,34 +41,24 @@ public class VoiceMessagesPlugin implements VoicechatPlugin {
         clientApi.registerClientVolumeCategory(volumeCategory);
     }
 
-    public static VoicechatClientApi getClientApi() {
-        return clientApi;
+    private void onClientVoicechatConnection(ClientVoicechatConnectionEvent event) {
+        clientConnected = event.isConnected();
     }
 
-    public static OpusEncoder getClientOpusEncoder() {
-        return clientOpusEncoder;
+    public static VoicechatApi getApi() {
+        return api;
+    }
+
+    public static VoicechatClientApi getClientApi() {
+        return clientApi;
     }
 
     public static VolumeCategory getVolumeCategory() {
         return volumeCategory;
     }
 
-    public static List<byte[]> encodeList(OpusEncoder encoder, List<short[]> audio) {
-        int size = audio.size();
-        ImmutableList.Builder<byte[]> builder = ImmutableList.builderWithExpectedSize(size);
-        for (short[] frame : audio) {
-            builder.add(encoder.encode(frame));
-        }
-        return builder.build();
-    }
-
-    public static List<short[]> decodeList(OpusDecoder decoder, List<byte[]> encoded) {
-        int size = encoded.size();
-        ImmutableList.Builder<short[]> builder = ImmutableList.builderWithExpectedSize(size);
-        for (byte[] frame : encoded) {
-            builder.add(decoder.decode(frame));
-        }
-        return builder.build();
+    public static boolean isClientConnected() {
+        return clientConnected;
     }
 
 }
