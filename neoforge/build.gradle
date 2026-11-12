@@ -23,4 +23,7 @@ repositories {
 
 dependencies {
     implementation "maven.modrinth:simple-voice-chat:neoforge-${minecraft_version}-${voicechat_mod_version}"
+    // Common sources are compiled in this module too, including the test source set
+    compileOnly "maven.modrinth:plasmo-voice:neoforge-${minecraft_version}-${plasmovoice_version}"
+    testCompileOnly "maven.modrinth:plasmo-voice:neoforge-${minecraft_version}-${plasmovoice_version}"
 }

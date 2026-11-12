@@ -30,7 +30,8 @@
     "java": ">=21",
     "fabric-api": "*"
   },
-  "recommends": {
-    "voicechat": "*"
+  "suggests": {
+    "voicechat": "*",
+    "plasmovoice": "*"
   }
 }

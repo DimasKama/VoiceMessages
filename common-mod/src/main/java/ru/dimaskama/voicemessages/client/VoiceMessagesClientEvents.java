@@ -16,7 +16,7 @@ public final class VoiceMessagesClientEvents {
     }
 
     public static void onClientTick(Minecraft minecraft) {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             VoiceMessagesClientNetworking.tickBuildingVoiceMessages();
         }
     }

@@ -1,1 +1,2 @@
-- Fix playback thread pool creating non-daemon threads
+- Add Plasmo Voice compatibility
+- Use either Plasmo Voice or Simple Voice Chat as audio backend
