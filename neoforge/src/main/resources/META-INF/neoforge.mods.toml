@@ -30,7 +30,13 @@ side = "BOTH"
 modId = "voicechat"
 type = "optional"
 ordering = "NONE"
-side = "BOTH"
+side = "CLIENT"
+
+[[dependencies.voicemessages]]
+modId = "plasmovoice"
+type = "optional"
+ordering = "NONE"
+side = "CLIENT"
 
 [[mixins]]
 config = "voicemessages.mixins.json"

@@ -7,6 +7,7 @@ import net.minecraft.commands.Commands;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
@@ -14,6 +15,7 @@ import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.client.VoiceMessagesClientEvents;
 import ru.dimaskama.voicemessages.client.VoicemsgCommand;
+import ru.dimaskama.voicemessages.client.backend.VoiceBackends;
 
 @EventBusSubscriber(modid = VoiceMessages.ID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public final class VoiceMessagesNeoForgeClientEvents {
@@ -25,14 +27,14 @@ public final class VoiceMessagesNeoForgeClientEvents {
 
     @SubscribeEvent
     private static void onClientPlayerLoggingIn(ClientPlayerNetworkEvent.LoggingIn event) {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             VoiceMessagesClientEvents.onJoinedServer();
         }
     }
 
     @SubscribeEvent
     private static void onRegisterClientCommands(RegisterClientCommandsEvent event) {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             LiteralCommandNode<CommandSourceStack> command = event.getDispatcher().register(new VoicemsgCommand<>(
                     Commands::literal,
                     Commands::argument
@@ -41,6 +43,18 @@ public final class VoiceMessagesNeoForgeClientEvents {
                     .executes(command.getCommand())
                     .redirect(command));
         }
+    }
+
+    @EventBusSubscriber(modid = VoiceMessages.ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    public static final class ModBus {
+
+        @SubscribeEvent
+        private static void onClientSetup(FMLClientSetupEvent event) {
+            if (VoiceMessagesMod.isClientActive()) {
+                VoiceBackends.initClient();
+            }
+        }
+
     }
 
 }
