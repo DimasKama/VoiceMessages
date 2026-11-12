@@ -1,13 +1,13 @@
 package ru.dimaskama.voicemessages.client.networking;
 
 import com.mojang.util.UndashedUuid;
-import de.maxhenkel.voicechat.api.opus.OpusDecoder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import ru.dimaskama.voicemessages.VoiceMessages;
-import ru.dimaskama.voicemessages.VoiceMessagesPlugin;
 import ru.dimaskama.voicemessages.client.GuiMessageTagHack;
+import ru.dimaskama.voicemessages.client.backend.VoiceBackend;
+import ru.dimaskama.voicemessages.client.backend.VoiceBackends;
 import ru.dimaskama.voicemessages.networking.*;
 
 import java.util.*;
@@ -135,7 +135,7 @@ public final class VoiceMessagesClientNetworking {
 
         private final long startTime = System.currentTimeMillis();
         private final List<short[]> frames = new ArrayList<>();
-        private final OpusDecoder opusDecoder = VoiceMessagesPlugin.getClientApi().createDecoder();
+        private final VoiceBackend.Decoder decoder = VoiceBackends.get().createDecoder();
         private final UUID sender;
 
         private VoiceMessageBuilder(UUID sender) {
@@ -143,7 +143,9 @@ public final class VoiceMessagesClientNetworking {
         }
 
         public void appendChunk(List<byte[]> chunk) {
-            frames.addAll(VoiceMessagesPlugin.decodeList(opusDecoder, chunk));
+            for (byte[] encoded : chunk) {
+                frames.add(decoder.decode(encoded));
+            }
         }
 
         public int getDuration() {
@@ -160,7 +162,7 @@ public final class VoiceMessagesClientNetworking {
 
         @Override
         public void close() {
-            opusDecoder.close();
+            decoder.close();
         }
 
     }

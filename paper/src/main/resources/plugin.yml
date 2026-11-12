@@ -5,8 +5,6 @@ description: Voice messages in minecraft chat
 author: DimasKama
 folia-supported: true
 api-version: 1.21
-depend:
-  - voicechat
 permissions:
   voicemessages.send:
     default: true

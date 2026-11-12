@@ -14,6 +14,8 @@ import net.neoforged.neoforge.server.permission.nodes.PermissionTypes;
 import ru.dimaskama.voicemessages.VoiceMessages;
 import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.VoiceMessagesModService;
+import ru.dimaskama.voicemessages.client.backend.VoiceBackend;
+import ru.dimaskama.voicemessages.neoforge.client.NeoForgeVoiceChatOfflineOutput;
 import ru.dimaskama.voicemessages.neoforge.client.NeoForgeVoiceRecordThread;
 
 import java.io.IOException;
@@ -73,6 +75,11 @@ public final class VoiceMessagesNeoForge {
             @Override
             public VoiceRecordThread createVoiceRecordThread(Predicate<short[]> frameConsumer, Consumer<IOException> onMicError) {
                 return new NeoForgeVoiceRecordThread(frameConsumer, onMicError);
+            }
+
+            @Override
+            public VoiceBackend.AudioOutput createVoiceChatOfflineOutput() {
+                return new NeoForgeVoiceChatOfflineOutput();
             }
 
             @Override
