@@ -43,7 +43,7 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
 
     @ModifyReturnValue(method = "isChatFocused", at = @At("TAIL"))
     private boolean modifyChatFocused(boolean original) {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             return original || minecraft.screen instanceof OverlayScreen overlayScreen && overlayScreen.parent instanceof ChatScreen;
         }
         return false;
@@ -51,7 +51,7 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
 
     @Inject(method = "render", at = @At("HEAD"))
     private void renderHead(GuiGraphics guiGraphics, int currentTick, int mouseX, int mouseY, boolean focused, CallbackInfo ci) {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             if (voicemessages_visiblePlaybackPlayers == null) {
                 voicemessages_visiblePlaybackPlayers = new ArrayList<>();
             } else {
@@ -70,7 +70,7 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
     )
     private int wrapRenderLine(GuiGraphics instance, Font font, FormattedCharSequence formattedCharSequence, int x, int y, int color, Operation<Integer> original, @Local GuiMessage.Line line) {
         int addX = original.call(instance, font, formattedCharSequence, x, y, color);
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             Playback playback = GuiMessageTagHack.getPlayback(line);
             if (playback != null) {
                 double scale = getScale();
@@ -107,7 +107,7 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
             )
     )
     private Object clearRemovedMessage(Object original) {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             Playback playback = GuiMessageTagHack.getPlayback((GuiMessage.Line) original);
             if (playback != null) {
                 PlaybackManager.MAIN.remove(playback);
@@ -119,7 +119,7 @@ abstract class ChatComponentMixin implements ChatComponentDuck {
 
     @Inject(method = "clearMessages", at = @At("HEAD"))
     private void clearHead(CallbackInfo ci) {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
             PlaybackManager.MAIN.clearAll();
         }
     }
