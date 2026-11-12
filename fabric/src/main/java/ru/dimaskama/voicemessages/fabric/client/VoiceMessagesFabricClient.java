@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import ru.dimaskama.voicemessages.VoiceMessagesMod;
 import ru.dimaskama.voicemessages.client.VoiceMessagesClientEvents;
 import ru.dimaskama.voicemessages.client.VoicemsgCommand;
+import ru.dimaskama.voicemessages.client.backend.VoiceBackends;
 import ru.dimaskama.voicemessages.client.networking.VoiceMessagesClientNetworking;
 import ru.dimaskama.voicemessages.networking.VoiceMessageChunkS2C;
 import ru.dimaskama.voicemessages.networking.VoiceMessageEndS2C;
@@ -21,7 +22,9 @@ public final class VoiceMessagesFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        if (VoiceMessagesMod.isActive()) {
+        if (VoiceMessagesMod.isClientActive()) {
+            VoiceBackends.initClient();
+
             ClientPlayNetworking.registerGlobalReceiver(VoiceMessagesConfigS2C.TYPE, (payload, context) ->
                     VoiceMessagesClientNetworking.onConfigReceived(payload));
             ClientPlayNetworking.registerGlobalReceiver(VoiceMessageTargetsS2C.TYPE, (payload, context) ->

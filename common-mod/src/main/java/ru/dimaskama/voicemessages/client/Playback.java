@@ -1,11 +1,11 @@
 package ru.dimaskama.voicemessages.client;
 
-import de.maxhenkel.voicechat.api.audiochannel.ClientAudioChannel;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatList;
 import net.minecraft.util.Mth;
 import ru.dimaskama.voicemessages.VoiceMessages;
-import ru.dimaskama.voicemessages.VoiceMessagesPlugin;
+import ru.dimaskama.voicemessages.client.backend.VoiceBackend;
+import ru.dimaskama.voicemessages.client.backend.VoiceBackends;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,7 +22,8 @@ public class Playback {
         thread.setDaemon(true);
         return thread;
     });
-    private final ClientAudioChannel channel;
+    private final UUID id = UUID.randomUUID();
+    private final VoiceBackend.AudioOutput output;
     private final List<short[]> audio;
     private final FloatList audioLevels;
     private final AtomicInteger framePosition = new AtomicInteger();
@@ -34,23 +35,17 @@ public class Playback {
     }
 
     public Playback(List<short[]> audio, FloatList audioLevels) {
-        this(createChannel(), audio, audioLevels);
+        this(VoiceBackends.get().createOutput(), audio, audioLevels);
     }
 
-    public Playback(ClientAudioChannel channel, List<short[]> audio, FloatList audioLevels) {
-        this.channel = channel;
+    public Playback(VoiceBackend.AudioOutput output, List<short[]> audio, FloatList audioLevels) {
+        this.output = output;
         this.audio = audio;
         this.audioLevels = audioLevels;
     }
 
-    private static ClientAudioChannel createChannel() {
-        ClientAudioChannel channel = VoiceMessagesPlugin.getClientApi().createStaticAudioChannel(UUID.randomUUID());
-        channel.setCategory(VoiceMessagesPlugin.getVolumeCategory().getId());
-        return channel;
-    }
-
-    public ClientAudioChannel getChannel() {
-        return channel;
+    public UUID getId() {
+        return id;
     }
 
     public List<short[]> getAudio() {
@@ -93,6 +88,8 @@ public class Playback {
     public synchronized void stop() {
         if (playFuture != null) {
             playFuture.cancel(true);
+            // Runs after the currently playing frame, as the executor is single-threaded
+            SOUND_PLAYER_EXECUTOR.execute(output::stop);
         }
     }
 
@@ -103,13 +100,14 @@ public class Playback {
     private void playNextFrame() {
         int pos = framePosition.getAndIncrement();
         if (pos < 0 || pos >= audio.size()) {
+            output.stop();
             Runnable onFinish = this.onFinish;
             if (onFinish != null) {
                 onFinish.run();
             }
             throw new RuntimeException("playback finished");
         }
-        channel.play(audio.get(pos));
+        output.play(audio.get(pos));
     }
 
     public static float calculateAudioLevel(short[] frame) {

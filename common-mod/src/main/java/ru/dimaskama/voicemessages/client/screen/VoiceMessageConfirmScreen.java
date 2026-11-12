@@ -1,7 +1,6 @@
 package ru.dimaskama.voicemessages.client.screen;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import de.maxhenkel.voicechat.api.opus.OpusEncoder;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -15,9 +14,12 @@ import ru.dimaskama.voicemessages.*;
 import ru.dimaskama.voicemessages.client.Playback;
 import ru.dimaskama.voicemessages.client.PlaybackManager;
 import ru.dimaskama.voicemessages.client.PlaybackPlayer;
+import ru.dimaskama.voicemessages.client.backend.VoiceBackend;
+import ru.dimaskama.voicemessages.client.backend.VoiceBackends;
 import ru.dimaskama.voicemessages.networking.VoiceMessageChunkC2S;
 import ru.dimaskama.voicemessages.networking.VoiceMessageEndC2S;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VoiceMessageConfirmScreen extends OverlayScreen {
@@ -80,10 +82,14 @@ public class VoiceMessageConfirmScreen extends OverlayScreen {
 
     private void send() {
         List<short[]> audio = playback.getAudio();
-        OpusEncoder encoder = VoiceMessagesPlugin.getClientOpusEncoder();
-        encoder.resetState();
+        List<byte[]> encoded = new ArrayList<>(audio.size());
+        try (VoiceBackend.Encoder encoder = VoiceBackends.get().createEncoder()) {
+            for (short[] frame : audio) {
+                encoded.add(encoder.encode(frame));
+            }
+        }
         VoiceMessagesModService service = VoiceMessagesMod.getService();
-        for (VoiceMessageChunkC2S chunk : VoiceMessageChunkC2S.split(VoiceMessagesPlugin.encodeList(encoder, audio))) {
+        for (VoiceMessageChunkC2S chunk : VoiceMessageChunkC2S.split(encoded)) {
             service.sendToServer(chunk);
         }
         service.sendToServer(new VoiceMessageEndC2S(target));
